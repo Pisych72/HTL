@@ -1,0 +1,36 @@
+{% extends 'trade/listpage.html' %}
+{% load static %}
+{% block DataArea %}
+<h5 class="mb-3">{{title}}</h5>
+<div >
+    <form action="" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+            <div class="form-row pb-1 pl-2 pt-1">
+            {{form.title}}
+           {{form.photo}}
+            <div>
+    <div class="text-end ml-1 ">
+     <button type="submit" class="btn btn-success btn-sm shadow addbtn">Добавить</button>
+     <a href="{% url 'Category'  %}" class="btn btn-secondary btn-sm shadow btnblack ">Отмена </a>
+    </div>
+    </form>
+</div>
+</div>
+<div style="display:block;overflow-y: auto; height:550px;"  >
+<table class="table table-sm table-bordered table-hover  ">
+   <tr class="secondary">
+     <th colspan="2">Наименование</th>
+
+    <th class="text-center ">Удалить</th>
+    </tr>
+{% for item in data %}
+<tr>
+     <td class="pt-2 pb-0" style="width:50px">{% if item.photo %}<img src="{{item.photo.url}}"  alt="..." width="30" height="30" class="mb-2 rounded-circle" >{% endif %}</td>
+    <td class="pt-2 pb-0 align-middle"><a  href="{% url 'UpdateCategory' item.pk %}" class="text-dark lead"> <small>{{item.title}}</small> </a></td>
+    <td class="text-center pt-0 pb-2" style="vertical-align:middle"><a href="{% url 'DeleteCategory' item.pk %}" ><img src="{% static 'trade/images/delete2.png' %}" height="18"  ></a></td>
+</tr>
+{% endfor %}
+</table>
+</div>
+</div>
+{% endblock DataArea %}

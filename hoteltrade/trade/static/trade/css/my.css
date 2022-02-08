@@ -1,0 +1,20 @@
+.myback {
+background-color:RGB(31,95,139);
+}
+.btnblack {
+background-color:RGB(31,95,139);
+color: white;
+}
+.greenbtn{
+background-color:DarkGreen;
+}
+.logo{
+height:40px;
+}
+.thgrey{
+background-color:LightGray;
+}
+.addbtn{
+width=30px;
+background-color:RGB(48,118,114);
+}

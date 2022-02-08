@@ -1,0 +1,15 @@
+{% extends 'trade/base.html' %}
+{% block LinkArea %}
+<h4 class="text-white">Торговля</h4>
+     <a href="{% url 'Good' %}" class="btn btn-secondary border border-white  nav-link mb-1 btnblack">Товары </a>
+       <a href="{% url 'Category' %}" class="btn btn-secondary border border-white  nav-link mb-1 btnblack">Категории</a>
+<a href="{% url 'Create' 'Unit' %}" class="btn btn-secondary border border-white  nav-link mb-1 btnblack">Ед.изм. </a>
+<a href="{% url 'Create' 'Saler' %}" class="btn btn-secondary border border-white  nav-link mb-1 btnblack">Поставщики </a>
+<a href="{% url 'Create' 'Pay' %}" class="btn btn-secondary border border-white  nav-link mb-1 btnblack">Виды оплаты </a>
+<h4 class="text-white">Гостиница</h4>
+          <a href="#" class="btn btn-secondary border border-white  nav-link mb-1 btnblack">Номера</a>
+         <a href="{% url 'Create' 'Customer' %}" class="btn btn-secondary border border-white  nav-link mb-1 btnblack">Организации</a>
+<a href="#" class="btn btn-secondary border border-white  nav-link mb-4 btnblack">Проживающие </a>
+<a href="{% url 'home' %}" class="btn btn-secondary border border-white  nav-link mb-1 addbtn">На главную</a>
+
+{% endblock LinkArea %}

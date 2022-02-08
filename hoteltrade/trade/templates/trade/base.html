@@ -1,0 +1,61 @@
+{% load static %}
+ <!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{title}}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" href="{% static 'trade/css/bootstrap.css' %}"  rel="stylesheet">
+    <link rel="shortcut icon" href="{% static 'trade/images/trade.ico' %}" type="image/x-icon">
+    <link type="text/css" href="{% static 'trade/css/my.css' %}"  rel="stylesheet">
+
+
+</head>
+<body>
+<div class="container border shadow ">
+    <div class="row">
+        <div class="col-md-12 mb-1 myback header1 ">
+
+            <h3 class="mt-1 text-white "> <img src="{% static 'trade/images/hotel4.png' %}" class="mr-2 logo">Гостиница АО ЕнСПК  </h3></div>
+    </div>
+<div class="row">
+    <div class="col-md-2 mb-1 myback" style="min-height:calc(100vh - 88px);"  >
+
+{% block LinkArea %}
+LinkArea
+{% endblock LinkArea %}
+</div>
+        <div class="col-md-10  shadow ">
+                   {% block DataArea %}
+DataArea
+{% endblock DataArea %}
+
+        </div>
+
+    </div>
+ <div class="row">
+    <div class="col-md-12 text-right myback text-white" >
+            АО "ЕнСПК" - 2021
+    </div>
+</div>
+</div>
+<script>
+    function CheckVolume(event){
+    var value0=event.target.id
+    var value1=value0.replace('btn','check')
+    var value2=value0.replace('btn','good')
+    var value3=document.getElementById(value1).innerText
+
+    alert(value3)
+
+
+
+
+
+    }
+
+</script>
+
+</body>
+</html>

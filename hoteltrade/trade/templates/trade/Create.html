@@ -1,0 +1,30 @@
+{% extends 'trade/listpage.html' %}
+{% load static %}
+{% block DataArea %}
+ <h5 class="mb-3">{{title}}</h5>
+<div >
+    <form action="" method="post">
+   {% csrf_token %}
+        <div class="form-row pb-1 pl-2 pt-1">
+    {{form.title}}
+<div class="text-end ml-1 ">
+     <button type="submit" class="btn btn-success btn-sm shadow addbtn ">Добавить</button>
+     <a href="{% url 'Create' tableName %}" class="btn btn-secondary btn-sm shadow btnblack ">Отмена </a>
+</div>
+    </form>
+</div></div>
+<div style="display:block;overflow-y: auto; height:550px;"  >
+<table class="table table-sm table-bordered table-hover  ">
+   <tr class="secondary">
+    <th>Наименование:</th>
+    <th class="text-center ">Удалить</th>
+    </tr>
+{% for item in data %}
+<tr >
+    <td class="pt-2 pb-0" ><a href="{% url 'Update' tableName item.pk %}" class="text-dark lead" ><small>{{item.title}}</small></a></td>
+    <td class="text-center pt-0 pb-2 " style="vertical-align:middle"><a href="{% url 'Delete' tableName item.pk %}" ><img src="{% static 'trade/images/delete2.png' %}" height="18" style="top:10px" ></a></td>
+</tr>
+{% endfor %}
+</table>
+</div>
+{% endblock DataArea %}

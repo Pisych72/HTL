@@ -18,3 +18,11 @@ background-color:LightGray;
 width=30px;
 background-color:RGB(48,118,114);
 }
+
+.theadback {
+background-color:RGB(168,216,234);
+color: white;
+}
+.backtable{
+background-color:RGB(246,252,254)
+}

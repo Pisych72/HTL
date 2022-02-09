@@ -8,16 +8,16 @@
         <div class="form-row pb-1 pl-2 pt-1">
     {{form.title}}{{form.photo}}
 <div class="text-end ml-1 ">
-     <button type="submit" class="btn btn-primary btn-sm shadow addbtn" style="width:80px;" >Изменить</button>
+     <button type="submit" class="btn btn-primary btn-sm shadow " style="width:80px;" >Изменить</button>
      <a href="{% url 'Category'  %}" class="btn btn-secondary btn-sm shadow btnblack ">Отмена </a>
 </div>
     </form>
 </div></div>
 <div style="display:block;overflow-y: auto; height:550px;"  >
-<table class="table table-sm table-bordered table-hover  ">
+<table class="table table-sm table-bordered table-hover backtable  ">
    <tr class="secondary">
-     <th colspan="2">Наименование</th>
-     <th class="text-center ">Удалить</th>
+     <th colspan="2" class="btnblack">Наименование</th>
+     <th class="text-center btnblack ">Удалить</th>
     </tr>
 {% for item in data %}
 <tr>

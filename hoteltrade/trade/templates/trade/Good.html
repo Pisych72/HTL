@@ -11,17 +11,17 @@
             title="Открыть справочник">...</a>{{form.category}}<a href="{% url 'Category' %}"
             class="btn-secondary btn btn-sm btnblack">...</a>
             <div class="text-end ml-1 ">
-                <button type="submit" class="btn btn-success btn-sm shadow addbtn">Добавить</button>
+                <button type="submit" class="btn btn-success btn-sm shadow ">Добавить</button>
                 <a href="{% url 'Good'  %}" class="btn btn-secondary btn-sm shadow btnblack ">Отмена </a>
             </div>
     </form>
         </div>
  </div>
 <div style="display:block;overflow-y: auto; height:550px;">
-    <table class="table table-sm table-bordered table-hover  ">
+    <table class="table table-sm table-bordered table-hover backtable ">
         <tr class="secondary">
-            <th>Наименование</th>
-            <th class="text-center ">Удалить</th>
+            <th class="btnblack">Наименование</th>
+            <th class="text-center btnblack ">Удалить</th>
         </tr>
         {% for item in category %}
         <tr>

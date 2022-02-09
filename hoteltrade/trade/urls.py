@@ -16,6 +16,7 @@ urlpatterns=[
    path('Good',Goods,name='Good'),
    path('UpdateGood/<str:pk>',UpdateGoods,name='UpdateGoods'),
    path('DeleteGood/<str:pk>',DeleteGoods,name='DeleteGoods'),
+   path('DocPage',DocPage,name='DocPage'),
 
 ]
 

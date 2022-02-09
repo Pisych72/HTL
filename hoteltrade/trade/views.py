@@ -9,6 +9,8 @@ def main(request):
 
 def listpage(request):
     return render(request, 'trade/listpage.html', {'title': 'Справочники'})
+def DocPage(request):
+    return render(request, 'trade/DocPage.html', {'title': 'Документы'})
 
 # Создание записей в справочниках
 def Create(request, TableName):

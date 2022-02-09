@@ -11,7 +11,7 @@
             title="Открыть справочник">...</a>{{form.category}}<a href="{% url 'Category' %}"
             class="btn-dark btn btn-sm">...</a>
             <div class="text-end ml-1 ">
-                <button type="submit" class="btn btn-primary btn-sm shadow addbtn">Изменить</button>
+                <button type="submit" class="btn btn-primary btn-sm shadow ">Изменить</button>
                 <a href="{% url 'Good'  %}" class="btn btn-secondary btn-sm shadow btnblack ">Отмена </a>
             </div>
     </form>
@@ -20,12 +20,12 @@
 <div style="display:block;overflow-y: auto; height:550px;">
     <table class="table table-sm table-bordered table-hover  ">
         <tr class="secondary">
-            <th>Наименование</th>
-            <th class="text-center ">Удалить</th>
+            <th class="btnblack">Наименование</th>
+            <th class="text-center btnblack ">Удалить</th>
         </tr>
         {% for item in category %}
         <tr>
-            <td class="pt-2 pb-0 " colspan="2">{% if item.photo %}<img src="{{item.photo.url}}" alt="..." width="30"
+            <td class="pt-2 pb-0 backcategory" colspan="2" >{% if item.photo %}<img src="{{item.photo.url}}" alt="..." width="30"
             height="30" class="mb-2 rounded-circle">{% endif %}
                 {{item.title}}
             </td>

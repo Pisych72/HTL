@@ -1,11 +1,23 @@
-{% extends 'trade/base.html' %}
+{% extends 'trade/DocPage.html' %}
 {% block LinkArea %}
 <h4 class="text-white">Документы</h4>
+
+
      <a href="{% url 'Good' %}" class="btn btn-secondary border border-white  nav-link mb-1 btnblack">Поступление </a>
-       <a href="{% url 'InitialDoc' %}" class="btn btn-secondary border border-white  nav-link mb-1 btnblack">Ввод остатков</a>
+       <a href="{% url 'Category' %}" class="btn btn-secondary border border-white  nav-link mb-1 btnblack">Ввод остатков</a>
 <a href="{% url 'Create' 'Unit' %}" class="btn btn-secondary border border-white  nav-link mb-1 btnblack">Списание </a>
 <a href="{% url 'Create' 'Saler' %}" class="btn btn-secondary border border-white  nav-link mb-1 btnblack">Кассовые чеки </a>
 
 <a href="{% url 'home' %}" class="btn btn-secondary border border-white  nav-link mb-1 addbtn">На главную</a>
 
 {% endblock LinkArea %}
+{% block DataArea %}
+<div class="row">
+ <div class="col-md-10 ">
+<h4 >Журнал начальных остатков</h4>
+ </div>
+
+<a href="{% url 'Good' %}" class="btn btn-success btn-sm border border-white   mb-1  ">Новый документ </a>
+</div>
+
+{% endblock DataArea %}

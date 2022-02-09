@@ -18,14 +18,14 @@
         </div>
  </div>
 <div style="display:block;overflow-y: auto; height:550px;">
-    <table class="table table-sm table-bordered table-hover backtable ">
+    <table class="table table-sm table-bordered table-hover  ">
         <tr class="secondary">
             <th class="btnblack">Наименование</th>
             <th class="text-center btnblack ">Удалить</th>
         </tr>
         {% for item in category %}
         <tr>
-            <td class="pt-2 pb-0 " colspan="2">{% if item.photo %}<img src="{{item.photo.url}}" alt="..." width="30"
+            <td class="pt-2 pb-0 backcategory" colspan="2">{% if item.photo %}<img src="{{item.photo.url}}" alt="..." width="30"
             height="30" class="mb-2 rounded-circle">{% endif %}
                 {{item.title}}
             </td>

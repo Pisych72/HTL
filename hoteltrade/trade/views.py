@@ -12,6 +12,7 @@ def listpage(request):
 def DocPage(request):
     return render(request, 'trade/DocPage.html', {'title': 'Документы'})
 def InitialDoc(request):
+
     return render(request, 'trade/InitialDocs.html', {'title': 'Ввод начальных остатков'})
 # Создание записей в справочниках
 def Create(request, TableName):

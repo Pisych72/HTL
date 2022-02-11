@@ -21,9 +21,7 @@
     </tr>
 {% for item in data %}
 <tr>
-
-      <td class="pt-2 pb-0" style="width:50px">{% if item.photo %}<img src="{{item.photo.url}}"  alt="..." width="30" height="30" class="mb-2 rounded-circle" >{% endif %}</td>
-
+     <td class="pt-2 pb-0" style="width:50px">{% if item.photo %}<img src="{{item.photo.url}}"  alt="..." width="30" height="30" class="mb-2 rounded-circle" >{% endif %}</td>
     <td class="pt-2 pb-0 align-middle"><a href="{% url 'UpdateCategory' item.pk %}" class="text-dark lead"><small>{{item.title}}</small></a></td>
     <td class="text-center pt-0 pb-2" style="vertical-align:middle"><a href="{% url 'DeleteCategory' item.pk %}" ><img src="{% static 'trade/images/delete2.png' %}" height="18"  ></a></td>
 </tr>

@@ -12,8 +12,25 @@ def listpage(request):
 def DocPage(request):
     return render(request, 'trade/DocPage.html', {'title': 'Документы'})
 def InitialDoc(request):
-
     return render(request, 'trade/InitialDocs.html', {'title': 'Ввод начальных остатков'})
+
+# Начальные остатки шапка документа:
+def CreateInitialDoc(request):
+    if request.method == 'POST':
+        form = InitialDocForm(request.POST)
+        form2 = InitialTableForm(request.POST)
+        if form.is_valid():
+            form.save()
+    else:
+        form = InitialDocForm(initial={'typedoc':2,'dealer':13})
+        form2 = InitialTableForm(initial={'typedoc': 2, })
+
+
+
+    return render(request,'trade/CreateInitialDoc.html',{'title': 'Новый документ (Начальные остатки)','form':form,'form2':form2})
+
+
+
 # Создание записей в справочниках
 def Create(request, TableName):
     if TableName == 'Unit':

@@ -34,3 +34,30 @@ display:block;
 overflow-y: auto;
 height:75vh;
 }
+
+.righttext{
+text-align:right;
+border-radius:5px;
+border-color:white;
+
+}
+
+.smalltext{
+font-size:small;
+}
+.textright{
+text-align:right;
+
+}
+.textcenter{
+text-align:center;
+}
+.formselect{
+
+border-radius:5px;
+border-color:white;
+height:35 px;
+font-size:18px;
+
+margin-top:2px;
+}

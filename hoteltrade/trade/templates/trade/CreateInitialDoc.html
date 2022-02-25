@@ -1,0 +1,69 @@
+{% extends 'trade/DocPage.html' %}
+{% block LinkArea %}
+<h4 class="text-white">Документы</h4>
+
+
+     <a href="{% url 'Good' %}" class="btn btn-secondary border border-white  nav-link mb-1 btnblack">Поступление </a>
+       <a href="{% url 'Category' %}" class="btn btn-secondary border border-white  nav-link mb-1 btnblack">Ввод остатков</a>
+<a href="{% url 'Create' 'Unit' %}" class="btn btn-secondary border border-white  nav-link mb-1 btnblack">Списание </a>
+<a href="{% url 'Create' 'Saler' %}" class="btn btn-secondary border border-white  nav-link mb-1 btnblack">Кассовые чеки </a>
+
+<a href="{% url 'home' %}" class="btn btn-secondary border border-white  nav-link mb-1 addbtn">На главную</a>
+
+{% endblock LinkArea %}
+{% block DataArea %}
+<div class="row">
+  <div class="col-md-12 ">
+<h4 >Новый документ (начальные остатки) </h4>
+
+<div >
+    <form action="" method="post">
+   {% csrf_token %}
+
+    <div class="scrolltable ">
+<table class="table table-sm table-bordered " >
+    <tr>
+        <th class="btnblack pl-2 ">
+            <div class='d-flex justify-content-end'>
+            Номер документа<div class="d-inline pl-2"> {{form.nomerdoc}}</div>
+            <div class="d-inline pl-2"> Дата документа</div><div class="d-inline ml-2"> {{form.datadoc}}</div>
+            </div>
+        </th>
+    </tr>
+</table>
+<table class="table table-sm table-bordered " >
+    <tr>
+        <th class="btnblack smalltext textcenter" >Наименование</th>
+        <th class="btnblack smalltext textcenter"  >Количество</th>
+        <th class="btnblack smalltext textright" >Цена <br>закупки</th>
+        <th class="btnblack smalltext textright" >% <br>наценки</th>
+        <th class="btnblack smalltext textright" >Цена<br> продажи</th>
+        <th class="btnblack smalltext textright" >Сумма<br> закупки</th>
+        <th class="btnblack smalltext textright " >Сумма<br> продажи</th>
+        <th class="btnblack smalltext textcenter ">Действие</th>
+    </tr>
+    <tr> <form action="" method="post"> {% csrf_token %}
+  <th class="btnblack">{{form2.title}}</th>
+  <th class="btnblack">{{form2.volume}}</th>
+        <th class="btnblack">{{form2.buyprice}}</th>
+        <th class="btnblack">{{form2.percent}}</th>
+        <th class="btnblack">{{form2.saleprice}}</th>
+        <th class="btnblack">{{form2.buytotal}}</th>
+        <th class="btnblack">{{form2.saletotal}}</th>
+        <th class="btnblack"><button type="submit" class="btn-warning btn-sm">Добавить</button></th>
+        </form>
+    </tr>
+</table>
+
+<button type="submit" class="btn-warning btn-sm">Добавить строку</button>
+
+    {{form.dealer}}{{form.typedoc}}
+
+{{form2.as_p}}
+
+     </div>
+</div>
+</div>
+</div>
+
+{% endblock DataArea %}

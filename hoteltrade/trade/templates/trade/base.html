@@ -40,20 +40,30 @@ DataArea
     </div>
 </div>
 </div>
-<script>
+<script type="text/javascript">
     function CheckVolume(event){
     var value0=event.target.id
     var value1=value0.replace('btn','check')
     var value2=value0.replace('btn','good')
     var value3=document.getElementById(value1).innerText
-
     alert(value3)
-
-
-
-
-
     }
+
+  function getResult(){
+    var volume = document.getElementById("id_volume");
+    var buyprice = document.getElementById("id_buyprice");
+    var buytotal = document.getElementById("id_buytotal");
+    var saleprice = document.getElementById("id_saleprice");
+    var saletotal = document.getElementById("id_saletotal");
+    var percent = document.getElementById("id_percent");
+
+
+    buytotal.value=Math.round(volume.value*buyprice.value);
+    saleprice.value= Math.round(buyprice.value*((percent.value/100)+1));
+    saletotal.value=Math.round(saleprice.value*volume.value);
+
+
+  }
 
 </script>
 

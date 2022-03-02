@@ -14,23 +14,15 @@
 {% block DataArea %}
 <div class="row">
   <div class="col-md-12 ">
-<h4 >Новый документ (начальные остатки) </h4>
+   <h4 > Начальные остатки. Документ № {{currentdoc.nomerdoc}} от {{currentdoc.datadoc}}
+      <div class="text-end d-inline-block float-right"><a href="{% url 'InitialDoc' %}" class="btn btn-primary btn-sm   mb-1  ">Журнал документов </a></div>
+</h4>
 
-<div >
-    <form action="" method="post">
-   {% csrf_token %}
 
-    <div class="scrolltable ">
-<table class="table table-sm table-bordered mb-0" >
-    <tr>
-        <th class="btnblack pl-2 ">
-            <div class='d-flex justify-content-end'>
-            Номер документа<div class="d-inline pl-2"> {{form.nomerdoc}}</div>
-            <div class="d-inline pl-2"> Дата документа</div><div class="d-inline ml-2"> {{form.datadoc}}</div>
-            </div>
-        </th>
-    </tr>
-</table>
+    <div >
+<div class="scrolltable ">
+
+<div>
 <table class="table table-sm table-bordered mt-0 " >
     <tr>
         <th class="btnblack smalltext textcenter" >Наименование</th>
@@ -42,29 +34,46 @@
         <th class="btnblack smalltext textright " >Сумма<br> продажи</th>
         <th class="btnblack smalltext textcenter ">Действие</th>
     </tr>
-    <tr> <form action="" method="post"> {% csrf_token %}
+    <tr> <form action="" method="post" "> {% csrf_token %}
 
-  <th class="btnblack">{{form2.title}}</th>
-  <th class="btnblack">{{form2.volume}}</th>
-        <th class="btnblack">{{form2.buyprice}}</th>
-        <th class="btnblack">{{form2.percent}}</th>
-        <th class="btnblack">{{form2.saleprice}}</th>
-        <th class="btnblack">{{form2.buytotal}}</th>
-        <th class="btnblack">{{form2.saletotal}}</th>
-        <th class="btnblack"><button type="submit" class="btn-success btn-sm">Добавить строку</button></th>
+  <th class="btnblack">{{form.title}}</th>
+  <th class="btnblack">{{form.volume}}</th>
+        <th class="btnblack">{{form.buyprice}}</th>
+        <th class="btnblack">{{form.percent}}</th>
+        <th class="btnblack">{{form.saleprice}}</th>
+        <th class="btnblack">{{form.buytotal}}</th>
+        <th class="btnblack">{{form.saletotal}}</th>
+
+        <th class="btnblack"><button  type="submit" class="btn-success btn-sm">Добавить </button></th>
+      {{form.typedoc}}
         </form>
     </tr>
+
+    {% for item in currenttable %}
+
+    <tr>
+        <th class=" lead ">{{item.title}}, {{item.title.unit.title}}</th>
+        <th class=" lead textright">{{item.volume}}</th>
+        <th class=" lead textright">{{item.buyprice}}</th>
+        <th class=" lead textright">{{item.percent}}</th>
+        <th class=" lead textright">{{item.saleprice}}</th>
+        <th class=" lead textright">{{item.buytotal}}</th>
+        <th class=" lead textright">{{item.saletotal}}</th>
+    </tr>
+{% endfor %}
 </table>
 
 
 
-    {{form.dealer}}{{form.typedoc}}
+
+
+
 
 
 
      </div>
+    </div>
 </div>
 </div>
 </div>
-
 {% endblock DataArea %}

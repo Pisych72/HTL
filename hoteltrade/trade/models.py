@@ -72,12 +72,12 @@ class TypeDoc(models.Model):
 
 class Doc(models.Model):
     nomerdoc=models.CharField(max_length=20,verbose_name="Номер документв")
-    datadoc=models.DateField(verbose_name='Дата документа',blank=True,null=True)
+    datadoc=models.DateField(verbose_name='Дата документа')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='Создан')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Обновлен')
     dealer=models.ForeignKey(Saler,verbose_name='Поставщик',on_delete=models.PROTECT)
-    buytotal=models.DecimalField(max_digits=8,decimal_places=2,blank=True,null=True,default=0.00)
-    saletotal=models.DecimalField(max_digits=8,decimal_places=2,blank=True,null=True,default=0.00)
+    buytotal=models.DecimalField(max_digits=8,decimal_places=2,default=0.00)
+    saletotal=models.DecimalField(max_digits=8,decimal_places=2,default=0.00)
     transaction=models.BooleanField(verbose_name='Проведен',default=False)
     typedoc=models.ForeignKey(TypeDoc,verbose_name='Тип документа',on_delete=models.PROTECT)
     def __str__(self):

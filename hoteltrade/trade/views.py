@@ -1,7 +1,10 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
+from django.urls import reverse
+
 from .models import *
 from .forms import *
+from django.db.models import Sum
 
 
 def main(request):
@@ -12,24 +15,56 @@ def listpage(request):
 def DocPage(request):
     return render(request, 'trade/DocPage.html', {'title': 'Документы'})
 def InitialDoc(request):
-    return render(request, 'trade/InitialDocs.html', {'title': 'Ввод начальных остатков'})
+    InitialDoc=Doc.objects.filter(typedoc=2).order_by('-created_at')
+    return render(request, 'trade/InitialDocs.html', {'title': 'Ввод начальных остатков','doc':InitialDoc})
 
-# Начальные остатки шапка документа:
+# Начальные остатки новый документ:
 def CreateInitialDoc(request):
     if request.method == 'POST':
         form = InitialDocForm(request.POST)
         form2 = InitialTableForm(request.POST)
-        if form.is_valid():
-            form.save()
+        if form.is_valid() and form2.is_valid():
+
+            formDoc=form.save()
+            formTable=form2.save(commit=False)
+            formTable.iddoc_id=formDoc.id
+            formTable.save()
+
+            Doc.objects.filter(id=formDoc.id).update(buytotal=formTable.buytotal,saletotal=formTable.saletotal)
+            url = reverse('UpdateInitialDoc', kwargs={'pk': formDoc.id})
+            return HttpResponseRedirect(url)
     else:
         form = InitialDocForm(initial={'typedoc':2,'dealer':13})
-        form2 = InitialTableForm(initial={'typedoc': 2, })
-
-
-
+        form2 = InitialTableForm(initial={'typedoc': 2 })
     return render(request,'trade/CreateInitialDoc.html',{'title': 'Новый документ (Начальные остатки)','form':form,'form2':form2})
 
+# Редактирование докмента начальных остатков
 
+def UpdateInitialDoc(request,pk):
+    CurrentDoc=Doc.objects.get(pk=pk)
+    CurrentTable=DocJurnal.objects.filter(iddoc_id=pk)
+    if request.method == 'POST':
+
+        form = InitialTableForm(request.POST)
+
+        if form.is_valid():
+            formTable = form.save(commit=False)
+            formTable.iddoc_id = CurrentDoc.id
+            formTable.save()
+            url = reverse('UpdateInitialDoc', kwargs={'pk': CurrentDoc.id})
+            return HttpResponseRedirect(url)
+
+    else:
+        CurrentDoc = Doc.objects.get(pk=pk)
+        CurrentTable = DocJurnal.objects.filter(iddoc_id=pk)
+
+        form = InitialTableForm(initial={'typedoc': 2,'iddoc_id':CurrentDoc.id })
+
+    return render(request,'trade/CurrentInitialDoc.html',{'title': 'Новый документ (Начальные остатки)','form':form,
+    'currenttable':CurrentTable,'currentdoc':CurrentDoc})
+
+def SaveHeader(request,pk):
+    pass
 
 # Создание записей в справочниках
 def Create(request, TableName):

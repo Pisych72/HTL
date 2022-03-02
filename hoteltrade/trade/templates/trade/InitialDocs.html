@@ -1,10 +1,11 @@
 {% extends 'trade/DocPage.html' %}
+{% load static %}
 {% block LinkArea %}
 <h4 class="text-white">Документы</h4>
 
 
      <a href="{% url 'Good' %}" class="btn btn-secondary border border-white  nav-link mb-1 btnblack">Поступление </a>
-       <a href="{% url 'Category' %}" class="btn btn-secondary border border-white  nav-link mb-1 btnblack">Ввод остатков</a>
+       <a href="{% url 'InitialDoc' %}" class="btn btn-secondary border border-white  nav-link mb-1 btnblack">Ввод остатков</a>
 <a href="{% url 'Create' 'Unit' %}" class="btn btn-secondary border border-white  nav-link mb-1 btnblack">Списание </a>
 <a href="{% url 'Create' 'Saler' %}" class="btn btn-secondary border border-white  nav-link mb-1 btnblack">Кассовые чеки </a>
 
@@ -16,7 +17,30 @@
  <div class="col-md-10 ">
 <h4 >Журнал начальных остатков </h4>
  </div>
-<div class="text-end ml-1"><a href="{% url 'CreateInitialDoc' %}" class="btn btn-success btn-sm border border-white   mb-1  ">Новый документ </a></div>
+<div class="text-end ml-1"><a href="{% url 'CreateInitialDoc' %}" class="btn btn-success  btn-sm    mb-1  ">Новый документ </a></div>
 </div>
+<div class="scrolltable ">
+    <table class="table table-sm table-bordered mt-0 " >
+    <tr>
+        <th class="btnblack smalltext textcenter" >Номер документа</th>
+        <th class="btnblack smalltext textcenter"  >Дата документа</th>
 
+        <th class="btnblack smalltext textright" >Сумма<br> закупки</th>
+        <th class="btnblack smalltext textright " >Сумма<br> продажи</th>
+        <th class="btnblack smalltext textcenter " colspan="2">Действие</th>
+    </tr>
+
+{% for item in doc %}
+    <tr>
+        <th class=" lead textcenter text-dark" ><a href="{% url 'UpdateInitialDoc' item.pk %}" class="lead text-dark" >{{item.nomerdoc}}</a></th>
+        <th class=" lead textcenter text-dark" ><a href="{% url 'UpdateInitialDoc' item.pk %}" class="lead text-dark" >{{item.datadoc}}</a></th>
+        <th class=" lead textright">{{item.buytotal}}</th>
+        <th class=" lead textright">{{item.saletotal}}</th>
+  <td class="text-center pt-0 pb-2 " style="vertical-align:middle"><a href="#" ><img src="{% static 'trade/images/edit.png' %}" height="25" style="top:10px" title="Изменить реквизиты" ></a></td>
+  <td class="text-center pt-0 pb-2 " style="vertical-align:middle"><a href="#" ><img src="{% static 'trade/images/delete2.png' %}" height="18" style="top:10px" title="Удалить документ" ></a></td>
+    </tr>
+
+{% endfor %}
+    </table>
+</div>
 {% endblock DataArea %}

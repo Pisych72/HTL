@@ -1,5 +1,6 @@
 .myback {
 background-color:RGB(31,95,139);
+
 }
 .btnblack {
 background-color:RGB(31,95,139);
@@ -7,6 +8,7 @@ color: white;
 }
 .greenbtn{
 background-color:DarkGreen;
+color:white;
 }
 .logo{
 height:40px;
@@ -17,6 +19,7 @@ background-color:LightGray;
 .addbtn{
 width=30px;
 background-color:RGB(48,118,114);
+color: white;
 }
 
 .theadback {
@@ -60,4 +63,7 @@ height:35 px;
 font-size:18px;
 
 margin-top:2px;
+}
+.tabletextcolor{
+color:black;
 }

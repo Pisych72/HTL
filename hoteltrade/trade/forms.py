@@ -77,32 +77,33 @@ class MyDateInput(forms.DateInput):
 class InitialDocForm(forms.ModelForm):
    class Meta:
       model=Doc
-      fields=['nomerdoc','datadoc','dealer','typedoc']
+      fields=['nomerdoc','datadoc','dealer','typedoc','id']
       widgets={
-            'nomerdoc':forms.TextInput(attrs={'class':'righttext '}),
-            'datadoc':MyDateInput(attrs={'class':'righttext'}),
+            'nomerdoc':forms.TextInput(attrs={'class':'righttext','style':'width:75px;'}),
+            'datadoc':MyDateInput(attrs={'class':'righttext','style':'width:140px;'}),
             'dealer':forms.HiddenInput(),
             'typedoc': forms.HiddenInput(),
+          'id': forms.HiddenInput(),
         }
 
 # Ввод остатков табличная часть
 class InitialTableForm(forms.ModelForm):
    class Meta:
       model=DocJurnal
-      fields=['title','volume','buyprice','percent','saleprice','buytotal','saletotal','typedoc']
-      widgets = {'iddoc': forms.HiddenInput(attrs={}),
-                 'typedoc': forms.NumberInput(attrs={}),
+      fields=['title','volume','buyprice','percent','saleprice','buytotal','saletotal','typedoc',]
+      widgets = {
+                 'typedoc': forms.NumberInput(attrs={'style':'display:None'}),
                  'volume': forms.NumberInput(attrs={ 'class':'righttext','min': 0, 'value': 1,
-                                                    'oninput': 'getResult()', 'step': 1,'style':'width:75px;'}),
+                                                    'oninput': 'getResult()', 'step': 'any','style':'width:75px;'}),
                  'title': forms.Select(attrs={'class':'formselect'}),
                  'buyprice': forms.NumberInput(
-                     attrs={'class':'righttext', 'min': 0, 'value': 1, 'oninput': 'getResult()'}),
+                     attrs={'class':'righttext', 'min': 0, 'step': 'any','value': 1, 'oninput': 'getResult()','style':'width:75px;'}),
                  'saleprice': forms.NumberInput(
-                     attrs={ 'min': 0, 'value': 1, 'oninput': 'getResult()', 'step': 1, }),
+                     attrs={ 'class':'righttext','min': 0, 'step': 'any','value': 1, 'oninput': 'getResult()', 'style':'width:75px;' }),
                  'percent': forms.NumberInput(
-                     attrs={ 'min': 0, 'value': 20, 'oninput': 'getResult()', 'step': 1, }),
+                     attrs={'class':'righttext', 'min': 0,'step': 'any', 'value': 20, 'oninput': 'getResult()', 'style':'width:75px;' }),
                  'buytotal': forms.NumberInput(
-                     attrs={ 'min': 0, 'value': 1, }),
+                     attrs={'class':'righttext', 'min': 0,'step': 'any','value': 1, 'style':'width:75px;' }),
                  'saletotal': forms.NumberInput(
-                     attrs={ 'min': 0, 'value': 1, 'step':1 }),
+                     attrs={'class':'righttext', 'min': 0, 'step': 'any', 'value': 1,'style':'width:75px;' }),
                  }

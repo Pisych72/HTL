@@ -1,4 +1,5 @@
 {% extends 'trade/DocPage.html' %}
+{% load static %}
 {% block LinkArea %}
 <h4 class="text-white">Документы</h4>
 
@@ -25,14 +26,14 @@
 <div>
 <table class="table table-sm table-bordered mt-0 " >
     <tr>
-        <th class="btnblack smalltext textcenter" >Наименование</th>
-        <th class="btnblack smalltext textcenter"  >Количество</th>
-        <th class="btnblack smalltext textright" >Цена <br>закупки</th>
-        <th class="btnblack smalltext textright" >% <br>наценки</th>
-        <th class="btnblack smalltext textright" >Цена<br> продажи</th>
-        <th class="btnblack smalltext textright" >Сумма<br> закупки</th>
-        <th class="btnblack smalltext textright " >Сумма<br> продажи</th>
-        <th class="btnblack smalltext textcenter ">Действие</th>
+        <th class="btnblack  textcenter " >Наименование</th>
+        <th class="btnblack  textcenter"  >Количество</th>
+        <th class="btnblack  textright" >Цена <br>закупки</th>
+        <th class="btnblack  textright" >% <br>наценки</th>
+        <th class="btnblack  textright" >Цена<br> продажи</th>
+        <th class="btnblack  textright" >Сумма<br> закупки</th>
+        <th class="btnblack  textright " >Сумма<br> продажи</th>
+        <th class="btnblack  textcenter  " colspan="2">Действие</th>
     </tr>
     <tr> <form action="" method="post" "> {% csrf_token %}
 
@@ -44,7 +45,7 @@
         <th class="btnblack">{{form.buytotal}}</th>
         <th class="btnblack">{{form.saletotal}}</th>
 
-        <th class="btnblack"><button  type="submit" class="btn-success btn-sm">Добавить </button></th>
+        <th class="btnblack" colspan="2"><button  type="submit" class="btn-success btn-sm pr-2" >Добавить </button></th>
       {{form.typedoc}}
         </form>
     </tr>
@@ -59,9 +60,20 @@
         <th class=" lead textright">{{item.saleprice}}</th>
         <th class=" lead textright">{{item.buytotal}}</th>
         <th class=" lead textright">{{item.saletotal}}</th>
+         <td class="text-center pt-0 pb-2 " style="vertical-align:middle"><a href="#" ><img src="{% static 'trade/images/edit2.png' %}" height="22" style="top:10px" title="Изменить реквизиты" ></a></td>
+         <td class="text-center pt-0 pb-2 " style="vertical-align:middle"><a href="#" ><img src="{% static 'trade/images/delete2.png' %}" height="18" style="top:10px" title="Удалить строку" ></a></td>
     </tr>
 {% endfor %}
+    <tr>
+        <th class="btnblack">Итого:</th>
+        <th class="btnblack" colspan="4"></th>
+        <th class="btnblack textright ">{{currentdoc.buytotal}}</th>
+        <th class="btnblack textright ">{{currentdoc.saletotal}}</th>
+        <th class="btnblack " colspan="2"></th>
+    </tr>
 </table>
+
+
 
 
 

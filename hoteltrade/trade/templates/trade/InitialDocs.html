@@ -22,21 +22,21 @@
 <div class="scrolltable ">
     <table class="table table-sm table-bordered mt-0 " >
     <tr>
-        <th class="btnblack smalltext textcenter" >Номер документа</th>
-        <th class="btnblack smalltext textcenter"  >Дата документа</th>
+        <th class="btnblack  textcenter" >Номер документа</th>
+        <th class="btnblack  textcenter"  >Дата документа</th>
 
-        <th class="btnblack smalltext textright" >Сумма<br> закупки</th>
-        <th class="btnblack smalltext textright " >Сумма<br> продажи</th>
-        <th class="btnblack smalltext textcenter " colspan="2">Действие</th>
+        <th class="btnblack  textright" >Сумма закупки</th>
+        <th class="btnblack  textright " >Сумма продажи</th>
+        <th class="btnblack  textcenter " colspan="2">Действие</th>
     </tr>
 
 {% for item in doc %}
     <tr>
         <th class=" lead textcenter text-dark" ><a href="{% url 'UpdateInitialDoc' item.pk %}" class="lead text-dark" >{{item.nomerdoc}}</a></th>
-        <th class=" lead textcenter text-dark" ><a href="{% url 'UpdateInitialDoc' item.pk %}" class="lead text-dark" >{{item.datadoc}}</a></th>
+        <th class=" lead textcenter text-dark" ><a href="{% url 'UpdateInitialDoc' item.pk %}" class="lead text-dark" >{{item.datadoc|date:"d.m.Y"}}</a></th>
         <th class=" lead textright">{{item.buytotal}}</th>
         <th class=" lead textright">{{item.saletotal}}</th>
-  <td class="text-center pt-0 pb-2 " style="vertical-align:middle"><a href="#" ><img src="{% static 'trade/images/edit.png' %}" height="25" style="top:10px" title="Изменить реквизиты" ></a></td>
+  <td class="text-center pt-0 pb-2 " style="vertical-align:middle"><a href="#" ><img src="{% static 'trade/images/edit2.png' %}" height="22" style="top:10px" title="Изменить реквизиты" ></a></td>
   <td class="text-center pt-0 pb-2 " style="vertical-align:middle"><a href="#" ><img src="{% static 'trade/images/delete2.png' %}" height="18" style="top:10px" title="Удалить документ" ></a></td>
     </tr>
 

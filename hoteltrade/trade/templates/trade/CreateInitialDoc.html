@@ -14,9 +14,11 @@
 {% block DataArea %}
 <div class="row">
   <div class="col-md-12 ">
-<h4 >Новый документ (начальные остатки) </h4>
+<h4 >Новый документ (начальные остатки)
+<div class="text-end d-inline-block float-right"><a href="{% url 'InitialDoc' %}" class="btn btn-primary btn-sm   mb-1  ">Журнал документов </a></div>
+</h4>
+      <div >
 
-<div >
     <form action="" method="post">
    {% csrf_token %}
 

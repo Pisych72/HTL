@@ -51,17 +51,22 @@ def UpdateInitialDoc(request,pk):
             formTable = form.save(commit=False)
             formTable.iddoc_id = CurrentDoc.id
             formTable.save()
+            sum_total = DocJurnal.objects.filter(iddoc_id=pk).aggregate(Sum('buytotal','saletotal'))
+            Doc.objects.filter(id=pk).update(buytotal=sum_total['buytotal__sum'], saletotal=sum_total['saletotal__sum'])
             url = reverse('UpdateInitialDoc', kwargs={'pk': CurrentDoc.id})
             return HttpResponseRedirect(url)
 
     else:
         CurrentDoc = Doc.objects.get(pk=pk)
         CurrentTable = DocJurnal.objects.filter(iddoc_id=pk)
-
+        sum_buy = DocJurnal.objects.filter(iddoc_id=pk).aggregate(Sum('buytotal'))
+        sum_sale = DocJurnal.objects.filter(iddoc_id=pk).aggregate(Sum('saletotal'))
+        Doc.objects.filter(id=pk).update(buytotal=sum_buy['buytotal__sum'],saletotal=sum_sale['saletotal__sum'])
         form = InitialTableForm(initial={'typedoc': 2,'iddoc_id':CurrentDoc.id })
 
+
     return render(request,'trade/CurrentInitialDoc.html',{'title': 'Новый документ (Начальные остатки)','form':form,
-    'currenttable':CurrentTable,'currentdoc':CurrentDoc})
+    'currenttable':CurrentTable,'currentdoc':CurrentDoc,'sum_buy':sum_buy})
 
 def SaveHeader(request,pk):
     pass

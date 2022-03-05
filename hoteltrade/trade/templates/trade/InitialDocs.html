@@ -36,7 +36,7 @@
         <th class=" lead textcenter text-dark" ><a href="{% url 'UpdateInitialDoc' item.pk %}" class="lead text-dark" >{{item.datadoc|date:"d.m.Y"}}</a></th>
         <th class=" lead textright">{{item.buytotal}}</th>
         <th class=" lead textright">{{item.saletotal}}</th>
-  <td class="text-center pt-0 pb-2 " style="vertical-align:middle"><a href="#" ><img src="{% static 'trade/images/edit2.png' %}" height="22" style="top:10px" title="Изменить реквизиты" ></a></td>
+  <td class="text-center pt-0 pb-2 " style="vertical-align:middle"><a href="{% url 'UpdateHeaderDoc' item.pk %}" ><img src="{% static 'trade/images/edit2.png' %}" height="22" style="top:10px" title="Изменить реквизиты" ></a></td>
   <td class="text-center pt-0 pb-2 " style="vertical-align:middle"><a href="#" ><img src="{% static 'trade/images/delete2.png' %}" height="18" style="top:10px" title="Удалить документ" ></a></td>
     </tr>
 

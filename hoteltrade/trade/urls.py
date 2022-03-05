@@ -20,7 +20,7 @@ urlpatterns=[
    path('InitialDoc',InitialDoc,name='InitialDoc'),
    path('CreateInitialDoc',CreateInitialDoc,name='CreateInitialDoc'),
    path('UpdateInitialDoc/<str:pk>',UpdateInitialDoc,name='UpdateInitialDoc'),
-   path('SaveHeader/<str:pk>',SaveHeader,name='SaveHeader'),
+   path('UpdateHeaderDoc/<str:pk>',UpdateHeaderDoc,name='UpdateHeaderDoc'),
 ]
 
 if settings.DEBUG:

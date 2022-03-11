@@ -20,7 +20,9 @@ urlpatterns=[
    path('InitialDoc',InitialDoc,name='InitialDoc'),
    path('CreateInitialDoc',CreateInitialDoc,name='CreateInitialDoc'),
    path('UpdateInitialDoc/<str:pk>',UpdateInitialDoc,name='UpdateInitialDoc'),
-   path('UpdateHeaderDoc/<str:pk>',UpdateHeaderDoc,name='UpdateHeaderDoc'),
+   path('DeleteInitialDoc/<str:pk>',DeleteInitialDoc,name='DeleteInitialDoc'),
+   path('DeleteDoc/<str:pk>',DeleteDoc,name='DeleteDoc'),
+   path('DeleteDocString/<str:pk>',DeleteDocSting,name='DeleteDocString'),
 ]
 
 if settings.DEBUG:

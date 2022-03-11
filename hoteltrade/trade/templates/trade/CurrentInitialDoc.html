@@ -16,13 +16,15 @@
 <div class="row">
   <div class="col-md-12 ">
 
-   <h4>Редактирование реквизитов документа
-           <div class="text-end d-inline-block float-right"><input  type="submit" class="btn-primary btn-sm pr-2" form="formheader" value="Журнал документов" name="FormHeader"> </input></div>
+   <h4>Редактирование документа №  {{currentdoc.nomerdoc}}  от  {{currentdoc.datadoc|date:"d.m.Y"}} г.
+           <div class="text-end d-inline-block float-right"><input  type="submit" class="btn-primary btn-sm pr-2" form="formheader" value="Журнал документов" name="FormHeader"></input>
+
+           </div>
 </h4>
 <table class="table table-sm table-bordered mt-0 mb-1 " >
 <tr>
     <th class="btnblack text-right">
-        <form method="post" action="" id="formheader">{% csrf_token %}
+        <form method="post" action=""  id="formheader">{% csrf_token %}
             Документ №  {{docheader.nomerdoc}}  от  {{docheader.datadoc}}{{docheader.dealer}}{{docheader.typedoc}}
         </form>
 
@@ -56,7 +58,7 @@
         <th class="btnblack">{{form.buytotal}}</th>
         <th class="btnblack">{{form.saletotal}}</th>
 
-        <th class="btnblack" colspan="2"><button  type="submit" class="btn-success btn-sm pr-2" form="formtable">Добавить </button></th>
+        <th class="btnblack " colspan="2"><button  type="submit" class="btn-success btn-sm ml-0" form="formtable">Добавить </button></th>
       {{form.typedoc}}
         </form>
     </tr>
@@ -72,7 +74,7 @@
         <th class=" lead textright">{{item.buytotal}}</th>
         <th class=" lead textright">{{item.saletotal}}</th>
          <td class="text-center pt-0 pb-2 " style="vertical-align:middle"><a href="#" ><img src="{% static 'trade/images/edit2.png' %}" height="22" style="top:10px" title="Изменить реквизиты" ></a></td>
-         <td class="text-center pt-0 pb-2 " style="vertical-align:middle"><a href="#" ><img src="{% static 'trade/images/delete2.png' %}" height="18" style="top:10px" title="Удалить строку" ></a></td>
+         <td class="text-center pt-0 pb-2 " style="vertical-align:middle"><a href="{% url 'DeleteDocString' item.pk %}" ><img src="{% static 'trade/images/delete2.png' %}" height="18" style="top:10px" title="Удалить строку" ></a></td>
     </tr>
 {% endfor %}
     <tr>

@@ -90,8 +90,8 @@ class Doc(models.Model):
 
 # Журнал табличной части документов
 class DocJurnal(models.Model):
-    iddoc=models.ForeignKey(Doc,verbose_name='Документ',on_delete=models.PROTECT)
-    title=models.ForeignKey(Good,verbose_name='Наименование товара',on_delete=models.PROTECT)
+    iddoc=models.ForeignKey(Doc,verbose_name='Документ',on_delete=models.CASCADE)
+    title=models.ForeignKey(Good,verbose_name='Наименование товара',on_delete=models.CASCADE)
     volume=models.DecimalField(max_digits=8,decimal_places=2,blank=True)
     buyprice=models.DecimalField(max_digits=8,decimal_places=2,blank=True)
     percent=models.DecimalField(max_digits=8,decimal_places=2,blank=True)

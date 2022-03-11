@@ -1,0 +1,93 @@
+{% extends 'trade/DocPage.html' %}
+{% load static %}
+{% block LinkArea %}
+<h4 class="text-white">Документы</h4>
+
+
+     <a href="{% url 'Good' %}" class="btn btn-secondary border border-white  nav-link mb-1 btnblack">Поступление </a>
+       <a href="{% url 'InitialDoc' %}" class="btn btn-secondary border border-white  nav-link mb-1 btnblack">Ввод остатков</a>
+<a href="{% url 'Create' 'Unit' %}" class="btn btn-secondary border border-white  nav-link mb-1 btnblack">Списание </a>
+<a href="{% url 'Create' 'Saler' %}" class="btn btn-secondary border border-white  nav-link mb-1 btnblack">Кассовые чеки </a>
+
+<a href="{% url 'home' %}" class="btn btn-secondary border border-white  nav-link mb-1 addbtn">На главную</a>
+
+{% endblock LinkArea %}
+{% block DataArea %}
+<div class="row">
+  <div class="col-md-12 ">
+
+   <h4 class="text-danger">Удаление документа № {{currentdoc.nomerdoc}} от {{currentdoc.datadoc|date:"d.m.Y"}} г.
+           <div class="text-end d-inline-block float-right">
+<a href="{% url 'DeleteDoc' currentdoc.pk %}" class="btn btn-danger mb-1 btn-sm">Удалить документ</a>
+ <a href="{% url 'InitialDoc' %}" class="btn btn-secondary mb-1 btn-sm">Отмена</a>
+           </div>
+</h4>
+<table class="table table-sm table-bordered mt-0 mb-1 " >
+<tr>
+    <th class="deltable text-right text-white">
+
+            Документ №  {{currentdoc.nomerdoc}}  от  {{currentdoc.datadoc|date:"d.m.Y"}}
+
+
+    </th>
+</tr>
+</table>
+
+
+    <div >
+<div class="scrolltable ">
+
+<div>
+<table class="table table-sm table-bordered mt-0 " >
+    <tr>
+        <th class="deltable text-white  textcenter " >Наименование</th>
+        <th class="deltable text-white  textcenter"  >Количество</th>
+        <th class="deltable text-white  textright" >Цена <br>закупки</th>
+        <th class="deltable text-white  textright" >% <br>наценки</th>
+        <th class="deltable text-white  textright" >Цена<br> продажи</th>
+        <th class="deltable text-white  textright" >Сумма<br> закупки</th>
+        <th class="deltable text-white  textright " >Сумма<br> продажи</th>
+
+    </tr>
+
+ </tr>
+
+    {% for item in currenttable %}
+
+    <tr>
+        <th class=" lead ">{{item.title}}, {{item.title.unit.title}}</th>
+        <th class=" lead textright">{{item.volume}}</th>
+        <th class=" lead textright">{{item.buyprice}}</th>
+        <th class=" lead textright">{{item.percent}}</th>
+        <th class=" lead textright">{{item.saleprice}}</th>
+        <th class=" lead textright">{{item.buytotal}}</th>
+        <th class=" lead textright">{{item.saletotal}}</th>
+
+
+    </tr>
+{% endfor %}
+    <tr>
+        <th class="deltable text-white">Итого:</th>
+        <th class="deltable text-white" colspan="4"></th>
+        <th class="deltable text-white textright ">{{currentdoc.buytotal}}</th>
+        <th class="deltable text-white textright ">{{currentdoc.saletotal}}</th>
+
+    </tr>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+     </div>
+    </div>
+</div>
+</div>
+</div>
+{% endblock DataArea %}

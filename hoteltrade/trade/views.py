@@ -15,7 +15,7 @@ def listpage(request):
 def DocPage(request):
     return render(request, 'trade/DocPage.html', {'title': 'Документы'})
 def InitialDoc(request):
-    InitialDoc=Doc.objects.filter(typedoc=2).order_by('-created_at')
+    InitialDoc=Doc.objects.filter(typedoc=2).order_by('-datadoc')
     return render(request, 'trade/InitialDocs.html', {'title': 'Ввод начальных остатков','doc':InitialDoc})
 
 # Начальные остатки новый документ:
@@ -49,7 +49,10 @@ def UpdateInitialDoc(request,pk):
         if 'FormHeader' in request.POST:
             print(request.POST)
             print('YES')
-
+            CurrentDoc.nomerdoc = request.POST.get("nomerdoc")
+            CurrentDoc.datadoc = request.POST.get("datadoc")
+            CurrentDoc.save()
+            return redirect('InitialDoc')
         form = InitialTableForm(request.POST)
 
 
@@ -60,6 +63,8 @@ def UpdateInitialDoc(request,pk):
             sum_buy = DocJurnal.objects.filter(iddoc_id=pk).aggregate(Sum('buytotal'))
             sum_sale = DocJurnal.objects.filter(iddoc_id=pk).aggregate(Sum('saletotal'))
             Doc.objects.filter(id=pk).update(buytotal=sum_buy['buytotal__sum'], saletotal=sum_sale['saletotal__sum'])
+            if sum_sale['saletotal__sum'] == None and sum_buy['buytotal__sum'] == None:
+                Doc.objects.filter(id=pk).update(buytotal=0.00, saletotal=0.00)
             url = reverse('UpdateInitialDoc', kwargs={'pk': CurrentDoc.id})
             return HttpResponseRedirect(url)
     else:
@@ -68,6 +73,8 @@ def UpdateInitialDoc(request,pk):
         sum_buy = DocJurnal.objects.filter(iddoc_id=pk).aggregate(Sum('buytotal'))
         sum_sale = DocJurnal.objects.filter(iddoc_id=pk).aggregate(Sum('saletotal'))
         Doc.objects.filter(id=pk).update(buytotal=sum_buy['buytotal__sum'],saletotal=sum_sale['saletotal__sum'])
+        if sum_sale['saletotal__sum'] == None and sum_buy['buytotal__sum'] == None:
+            Doc.objects.filter(id=pk).update(buytotal=0.00, saletotal=0.00)
         form = InitialTableForm(initial={'typedoc': 2,'iddoc_id':CurrentDoc.id })
 
         docheader = InitialDocForm(instance=CurrentDoc,initial={'typedoc':2,'dealer':13})
@@ -75,29 +82,30 @@ def UpdateInitialDoc(request,pk):
     return render(request,'trade/CurrentInitialDoc.html',{'title': 'Новый документ (Начальные остатки)','form':form,
     'currenttable':CurrentTable,'currentdoc':CurrentDoc,'docheader':docheader})
 
-def UpdateHeaderDoc(request,pk):
+def DeleteInitialDoc(request,pk):
     CurrentDoc = Doc.objects.get(pk=pk)
     CurrentTable = DocJurnal.objects.filter(iddoc_id=pk)
-    sum_buy = DocJurnal.objects.filter(iddoc_id=pk).aggregate(Sum('buytotal'))
-    sum_sale = DocJurnal.objects.filter(iddoc_id=pk).aggregate(Sum('saletotal'))
-    Doc.objects.filter(id=pk).update(buytotal=sum_buy['buytotal__sum'], saletotal=sum_sale['saletotal__sum'])
-    if request.method == 'POST':
-        print(request.POST)
-        form = InitialDocForm(request.POST)
-        if form.is_valid():
+    return render(request,'trade/DeleteInitialDoc.html',{'title': 'Удаление документа (Начальные остатки)',
+    'currenttable':CurrentTable,'currentdoc':CurrentDoc,})
 
-           Doc.objects.filter(id=pk).update(nomerdoc=request.POST.get('nomerdoc'))
+def DeleteDoc(request,pk):
+    CurrentDoc = Doc.objects.get(pk=pk)
+    CurrentDoc.delete()
+    return redirect('InitialDoc')
+
+# Удаление строки из документа
+def DeleteDocSting(request,pk):
+    deleteString= DocJurnal.objects.get(pk=pk)
+    iddoc=deleteString.iddoc_id
+    deleteString.delete()
+    sum_buy = DocJurnal.objects.filter(iddoc_id=iddoc).aggregate(Sum('buytotal'))
+    sum_sale = DocJurnal.objects.filter(iddoc_id=iddoc).aggregate(Sum('saletotal'))
+    Doc.objects.filter(id=iddoc).update(buytotal=sum_buy['buytotal__sum'], saletotal=sum_sale['saletotal__sum'])
+    if sum_sale['saletotal__sum']==None and sum_buy['buytotal__sum'] == None:
+        Doc.objects.filter(id=iddoc).update(buytotal=0.00, saletotal=0.00)
 
 
-        return render(request, 'trade/UpdateHeader.html',
-                      {'title': 'Новый документ (Начальные остатки)', 'currenttable': CurrentTable,
-                       'currentdoc': CurrentDoc,'form':form})
-    else:
-        form = InitialDocForm(instance=CurrentDoc,initial={'typedoc':2,'dealer':13})
-    return render(request, 'trade/UpdateHeader.html', {'title': 'Новый документ (Начальные остатки)','currenttable': CurrentTable, 'currentdoc': CurrentDoc,'form':form})
-
-
-
+    return redirect('UpdateInitialDoc',iddoc)
 
 # Создание записей в справочниках
 def Create(request, TableName):

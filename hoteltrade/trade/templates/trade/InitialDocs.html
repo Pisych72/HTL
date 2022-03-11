@@ -14,11 +14,11 @@
 {% endblock LinkArea %}
 {% block DataArea %}
 <div class="row">
- <div class="col-md-10 ">
-<h4 >Журнал начальных остатков </h4>
- </div>
-<div class="text-end ml-1"><a href="{% url 'CreateInitialDoc' %}" class="btn btn-success  btn-sm    mb-1  ">Новый документ </a></div>
-</div>
+ <div class="col-md-12 ">
+<h4 >Журнал начальных остатков
+
+    <div class="text-end d-inline-block float-right"><a href="{% url 'CreateInitialDoc' %}" class="btn btn-success  btn-sm    mb-1  ">Новый документ </a></div>
+</h4>
 <div class="scrolltable ">
     <table class="table table-sm table-bordered mt-0 " >
     <tr>
@@ -32,15 +32,18 @@
 
 {% for item in doc %}
     <tr>
-        <th class=" lead textcenter text-dark" ><a href="{% url 'UpdateInitialDoc' item.pk %}" class="lead text-dark" >{{item.nomerdoc}}</a></th>
-        <th class=" lead textcenter text-dark" ><a href="{% url 'UpdateInitialDoc' item.pk %}" class="lead text-dark" >{{item.datadoc|date:"d.m.Y"}}</a></th>
+        <th class=" lead textcenter text-dark" > {{item.nomerdoc}}</th>
+        <th class=" lead textcenter text-dark" >{{item.datadoc|date:"d.m.Y"}}</th>
         <th class=" lead textright">{{item.buytotal}}</th>
         <th class=" lead textright">{{item.saletotal}}</th>
-  <td class="text-center pt-0 pb-2 " style="vertical-align:middle"><a href="{% url 'UpdateHeaderDoc' item.pk %}" ><img src="{% static 'trade/images/edit2.png' %}" height="22" style="top:10px" title="Изменить реквизиты" ></a></td>
-  <td class="text-center pt-0 pb-2 " style="vertical-align:middle"><a href="#" ><img src="{% static 'trade/images/delete2.png' %}" height="18" style="top:10px" title="Удалить документ" ></a></td>
+  <td class="text-center pt-0 pb-2 " style="vertical-align:middle"><a href="{% url 'UpdateInitialDoc' item.pk %}" ><img src="{% static 'trade/images/edit2.png' %}" height="22" style="top:10px" title="Редактировать" ></a></td>
+  <td class="text-center pt-0 pb-2 " style="vertical-align:middle"><a href="{% url 'DeleteInitialDoc' item.pk %}" ><img src="{% static 'trade/images/delete2.png' %}" height="18" style="top:10px" title="Удалить документ" ></a></td>
     </tr>
 
 {% endfor %}
     </table>
 </div>
+ </div>
+</div>
+
 {% endblock DataArea %}

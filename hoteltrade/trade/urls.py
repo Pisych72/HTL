@@ -22,7 +22,17 @@ urlpatterns=[
    path('UpdateInitialDoc/<str:pk>',UpdateInitialDoc,name='UpdateInitialDoc'),
    path('DeleteInitialDoc/<str:pk>',DeleteInitialDoc,name='DeleteInitialDoc'),
    path('DeleteDoc/<str:pk>',DeleteDoc,name='DeleteDoc'),
+   path('DeleteRDoc/<str:pk>',DeleteRDoc,name='DeleteRDoc'),
    path('DeleteDocString/<str:pk>',DeleteDocSting,name='DeleteDocString'),
+   path('UpdateDocString/<str:pk>',UpdateDocString,name='UpdateDocString'),
+   path('ReceiptDoc',ReceiptDoc,name='ReceiptDoc'),
+   path('CreateReceiptDoc',CreateReceiptDoc,name='CreateReceiptDoc'),
+   path('UpdateReceiptDoc/<str:pk>',UpdateReceiptDoc,name='UpdateReceiptDoc'),
+   path('DeleteReceiptDoc/<str:pk>',DeleteReceiptDoc,name='DeleteReceiptDoc'),
+
+   path('UpdateReceiptDoc/<str:pk>', UpdateReceiptDoc, name='UpdateReceiptDoc'),
+   path('UpdateReceiptDocString/<str:pk>',UpdateReceiptDocString,name='UpdateReceiptDocString'),
+   path('DeleteRDocString/<str:pk>',DeleteRDocSting,name='DeleteRDocString'),
 ]
 
 if settings.DEBUG:

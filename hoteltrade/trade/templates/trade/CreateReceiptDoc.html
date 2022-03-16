@@ -14,8 +14,8 @@
 {% block DataArea %}
 <div class="row">
   <div class="col-md-12 ">
-<h4 >Новый документ (начальные остатки)
-<div class="text-end d-inline-block float-right"><a href="{% url 'InitialDoc' %}" class="btn btn-primary btn-sm   mb-1  ">Журнал документов </a></div>
+<h4 >Новый документ (Поступление)
+<div class="text-end d-inline-block float-right"><a href="{% url 'ReceiptDoc' %}" class="btn btn-primary btn-sm   mb-1  ">Журнал документов </a></div>
 </h4>
       <div >
 
@@ -29,6 +29,7 @@
             <div class='d-flex justify-content-end'>
             Номер документа<div class="d-inline pl-2"> {{form.nomerdoc}}</div>
             <div class="d-inline pl-2"> Дата документа</div><div class="d-inline ml-2"> {{form.datadoc}}</div>
+             <div class="d-inline pl-2"> Организация</div><div class="d-inline ml-2"> {{form.dealer}}</div>
             </div>
         </th>
     </tr>
@@ -60,7 +61,7 @@
 
 
 
-    {{form.dealer}}{{form.typedoc}}
+   {{form.typedoc}}
 
 
 

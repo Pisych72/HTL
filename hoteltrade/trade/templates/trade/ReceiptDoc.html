@@ -15,16 +15,16 @@
 {% block DataArea %}
 <div class="row">
  <div class="col-md-12 ">
-<h4 >Журнал начальных остатков
+<h4 >Журнал приходных документов
 
-    <div class="text-end d-inline-block float-right"><a href="{% url 'CreateInitialDoc' %}" class="btn btn-success  btn-sm    mb-1  ">Новый документ </a></div>
+    <div class="text-end d-inline-block float-right"><a href="{% url 'CreateReceiptDoc' %}" class="btn btn-success  btn-sm    mb-1  ">Новый документ </a></div>
 </h4>
 <div class="scrolltable ">
     <table class="table table-sm table-bordered mt-0 " >
     <tr>
         <th class="btnblack  textcenter" >Номер документа</th>
         <th class="btnblack  textcenter"  >Дата документа</th>
-
+        <th class="btnblack  textcenter"  >Поставщик</th>
         <th class="btnblack  textright" >Сумма закупки</th>
         <th class="btnblack  textright " >Сумма продажи</th>
         <th class="btnblack  textcenter " colspan="2">Действие</th>
@@ -34,10 +34,11 @@
     <tr>
         <th class=" lead textcenter text-dark" > {{item.nomerdoc}}</th>
         <th class=" lead textcenter text-dark" >{{item.datadoc|date:"d.m.Y"}}</th>
+          <th class=" lead textcenter text-dark" >{{item.dealer}}</th>
         <th class=" lead textright">{{item.buytotal}}</th>
         <th class=" lead textright">{{item.saletotal}}</th>
-  <td class="text-center pt-0 pb-2 " style="vertical-align:middle"><a href="{% url 'UpdateInitialDoc' item.pk %}" ><img src="{% static 'trade/images/edit2.png' %}" height="22" style="top:10px" title="Редактировать" ></a></td>
-  <td class="text-center pt-0 pb-2 " style="vertical-align:middle"><a href="{% url 'DeleteInitialDoc' item.pk %}" ><img src="{% static 'trade/images/delete2.png' %}" height="18" style="top:10px" title="Удалить документ" ></a></td>
+  <td class="text-center pt-0 pb-2 " style="vertical-align:middle"><a href="{% url 'UpdateReceiptDoc' item.pk %}" ><img src="{% static 'trade/images/edit2.png' %}" height="22" style="top:10px" title="Редактировать" ></a></td>
+  <td class="text-center pt-0 pb-2 " style="vertical-align:middle"><a href="{% url 'DeleteReceiptDoc' item.pk %}" ><img src="{% static 'trade/images/delete2.png' %}" height="18" style="top:10px" title="Удалить документ" ></a></td>
     </tr>
 
 {% endfor %}

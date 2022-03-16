@@ -25,7 +25,7 @@
 <tr>
     <th class="btnblack text-right">
         <form method="post" action=""  id="formheader">{% csrf_token %}
-            Документ №  {{docheader.nomerdoc}}  от  {{docheader.datadoc}}{{docheader.dealer}}{{docheader.typedoc}}
+            Документ №  {{docheader.nomerdoc}}  от  {{docheader.datadoc}} Организация {{docheader.dealer}}{{docheader.typedoc}}
         </form>
 
     </th>
@@ -58,7 +58,7 @@
         <th class="btnblack">{{form.buytotal}}</th>
         <th class="btnblack">{{form.saletotal}}</th>
 
-        <th class="btnblack " colspan="2"><button  type="submit" class="btn-success btn-sm ml-0" form="formtable">Добавить </button></th>
+        <th class="btnblack " colspan="2"><button  type="submit" class="btn-warning btn-sm ml-0" form="formtable">Изменить </button></th>
       {{form.typedoc}}
         </form>
     </tr>
@@ -74,7 +74,7 @@
         <th class=" lead textright">{{item.buytotal}}</th>
         <th class=" lead textright">{{item.saletotal}}</th>
          <td class="text-center pt-0 pb-2 " style="vertical-align:middle"><a href="{% url 'UpdateDocString' item.id %}" ><img src="{% static 'trade/images/edit2.png' %}" height="22" style="top:10px" title="Изменить реквизиты" ></a></td>
-         <td class="text-center pt-0 pb-2 " style="vertical-align:middle"><a href="{% url 'DeleteDocString' item.pk %}" ><img src="{% static 'trade/images/delete2.png' %}" height="18" style="top:10px" title="Удалить строку" ></a></td>
+         <td class="text-center pt-0 pb-2 " style="vertical-align:middle"><a href="{% url 'DeleteRDocString' item.pk %}" ><img src="{% static 'trade/images/delete2.png' %}" height="18" style="top:10px" title="Удалить строку" ></a></td>
     </tr>
 {% endfor %}
     <tr>

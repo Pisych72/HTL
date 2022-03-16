@@ -1,7 +1,7 @@
 {% extends 'trade/base.html' %}
 {% block LinkArea %}
 <h4 class="text-white">Документы</h4>
-     <a href="{% url 'Good' %}" class="btn btn-secondary border border-white  nav-link mb-1 btnblack">Поступление </a>
+     <a href="{% url 'ReceiptDoc' %}" class="btn btn-secondary border border-white  nav-link mb-1 btnblack">Поступление </a>
        <a href="{% url 'InitialDoc' %}" class="btn btn-secondary border border-white  nav-link mb-1 btnblack">Ввод остатков</a>
 <a href="{% url 'Create' 'Unit' %}" class="btn btn-secondary border border-white  nav-link mb-1 btnblack">Списание </a>
 <a href="{% url 'Create' 'Saler' %}" class="btn btn-secondary border border-white  nav-link mb-1 btnblack">Кассовые чеки </a>

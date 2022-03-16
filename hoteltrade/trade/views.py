@@ -12,11 +12,83 @@ def main(request):
 
 def listpage(request):
     return render(request, 'trade/listpage.html', {'title': 'Справочники'})
+
 def DocPage(request):
     return render(request, 'trade/DocPage.html', {'title': 'Документы'})
+
 def InitialDoc(request):
     InitialDoc=Doc.objects.filter(typedoc=2).order_by('-datadoc')
     return render(request, 'trade/InitialDocs.html', {'title': 'Ввод начальных остатков','doc':InitialDoc})
+
+def ReceiptDoc(request):
+    ReceiptDoc=Doc.objects.filter(typedoc=1).order_by('-datadoc')
+    return render(request, 'trade/ReceiptDoc.html', {'title': 'Приходные документы','doc':ReceiptDoc})
+
+#  новый документ Поступление:
+def CreateReceiptDoc(request):
+    if request.method == 'POST':
+        form = ReceiptDocForm(request.POST)
+        form2 = ReceiptTableForm(request.POST)
+        if form.is_valid() and form2.is_valid():
+
+            formDoc=form.save()
+            formTable=form2.save(commit=False)
+            formTable.iddoc_id=formDoc.id
+            formTable.save()
+
+            Doc.objects.filter(id=formDoc.id).update(buytotal=formTable.buytotal,saletotal=formTable.saletotal)
+            url = reverse('UpdateReceiptDoc', kwargs={'pk': formDoc.id})
+            return HttpResponseRedirect(url)
+    else:
+        form = ReceiptDocForm(initial={'typedoc':1})
+        form2 = ReceiptTableForm(initial={'typedoc': 1 })
+    return render(request,'trade/CreateReceiptDoc.html',{'title': 'Новый документ (Поступление)','form':form,'form2':form2})
+
+# Редактирование докмента Поступление
+
+def UpdateReceiptDoc(request,pk):
+    CurrentDoc=Doc.objects.get(pk=pk)
+    CurrentTable=DocJurnal.objects.filter(iddoc_id=pk)
+    if request.method == 'POST':
+        docheader = ReceiptDocForm(request.POST)
+        if 'FormHeader' in request.POST:
+            print(request.POST)
+            print('YES')
+            CurrentDoc.nomerdoc = request.POST.get("nomerdoc")
+            CurrentDoc.datadoc = request.POST.get("datadoc")
+            CurrentDoc.save()
+            return redirect('ReceiptDoc')
+        form = ReceiptTableForm(request.POST)
+
+
+        if form.is_valid():
+            formTable = form.save(commit=False)
+            formTable.iddoc_id = CurrentDoc.id
+            formTable.save()
+            sum_buy = DocJurnal.objects.filter(iddoc_id=pk).aggregate(Sum('buytotal'))
+            sum_sale = DocJurnal.objects.filter(iddoc_id=pk).aggregate(Sum('saletotal'))
+            Doc.objects.filter(id=pk).update(buytotal=sum_buy['buytotal__sum'], saletotal=sum_sale['saletotal__sum'])
+            if sum_sale['saletotal__sum'] == None and sum_buy['buytotal__sum'] == None:
+                Doc.objects.filter(id=pk).update(buytotal=0.00, saletotal=0.00)
+            url = reverse('UpdateReceiptDoc', kwargs={'pk': CurrentDoc.id})
+            return HttpResponseRedirect(url)
+    else:
+        CurrentDoc = Doc.objects.get(pk=pk)
+        CurrentTable = DocJurnal.objects.filter(iddoc_id=pk)
+        sum_buy = DocJurnal.objects.filter(iddoc_id=pk).aggregate(Sum('buytotal'))
+        sum_sale = DocJurnal.objects.filter(iddoc_id=pk).aggregate(Sum('saletotal'))
+        Doc.objects.filter(id=pk).update(buytotal=sum_buy['buytotal__sum'],saletotal=sum_sale['saletotal__sum'])
+        if sum_sale['saletotal__sum'] == None and sum_buy['buytotal__sum'] == None:
+            Doc.objects.filter(id=pk).update(buytotal=0.00, saletotal=0.00)
+        form = ReceiptTableForm(initial={'typedoc': 2,'iddoc_id':CurrentDoc.id })
+
+        docheader = ReceiptDocForm(instance=CurrentDoc,initial={'typedoc':1})
+
+    return render(request,'trade/CurrentReceiptDoc.html',{'title': 'Новый документ (Поступление)','form':form,
+    'currenttable':CurrentTable,'currentdoc':CurrentDoc,'docheader':docheader})
+
+
+
 
 # Начальные остатки новый документ:
 def CreateInitialDoc(request):
@@ -39,8 +111,7 @@ def CreateInitialDoc(request):
     return render(request,'trade/CreateInitialDoc.html',{'title': 'Новый документ (Начальные остатки)','form':form,'form2':form2})
 
 # Редактирование докмента начальных остатков
-#global sum_buy
-#global sum_sale
+
 def UpdateInitialDoc(request,pk):
     CurrentDoc=Doc.objects.get(pk=pk)
     CurrentTable=DocJurnal.objects.filter(iddoc_id=pk)
@@ -81,6 +152,153 @@ def UpdateInitialDoc(request,pk):
 
     return render(request,'trade/CurrentInitialDoc.html',{'title': 'Новый документ (Начальные остатки)','form':form,
     'currenttable':CurrentTable,'currentdoc':CurrentDoc,'docheader':docheader})
+# Редактирование документа поступление
+
+def UpdateReceiptDoc(request,pk):
+    CurrentDoc=Doc.objects.get(pk=pk)
+    CurrentTable=DocJurnal.objects.filter(iddoc_id=pk)
+    if request.method == 'POST':
+        docheader = ReceiptDocForm(request.POST)
+        if 'FormHeader' in request.POST:
+            print(request.POST)
+            print('YES')
+            CurrentDoc.nomerdoc = request.POST.get("nomerdoc")
+            CurrentDoc.datadoc = request.POST.get("datadoc")
+            dealer=Saler.objects.get(id=request.POST.get("dealer"))
+            CurrentDoc.dealer=dealer
+            CurrentDoc.save()
+            return redirect('ReceiptDoc')
+        form = ReceiptTableForm(request.POST)
+
+
+        if form.is_valid():
+            formTable = form.save(commit=False)
+            formTable.iddoc_id = CurrentDoc.id
+            formTable.save()
+            sum_buy = DocJurnal.objects.filter(iddoc_id=pk).aggregate(Sum('buytotal'))
+            sum_sale = DocJurnal.objects.filter(iddoc_id=pk).aggregate(Sum('saletotal'))
+            Doc.objects.filter(id=pk).update(buytotal=sum_buy['buytotal__sum'], saletotal=sum_sale['saletotal__sum'])
+            if sum_sale['saletotal__sum'] == None and sum_buy['buytotal__sum'] == None:
+                Doc.objects.filter(id=pk).update(buytotal=0.00, saletotal=0.00)
+            url = reverse('UpdateReceiptDoc', kwargs={'pk': CurrentDoc.id})
+            return HttpResponseRedirect(url)
+    else:
+        CurrentDoc = Doc.objects.get(pk=pk)
+        CurrentTable = DocJurnal.objects.filter(iddoc_id=pk)
+        sum_buy = DocJurnal.objects.filter(iddoc_id=pk).aggregate(Sum('buytotal'))
+        sum_sale = DocJurnal.objects.filter(iddoc_id=pk).aggregate(Sum('saletotal'))
+        Doc.objects.filter(id=pk).update(buytotal=sum_buy['buytotal__sum'],saletotal=sum_sale['saletotal__sum'])
+        if sum_sale['saletotal__sum'] == None and sum_buy['buytotal__sum'] == None:
+            Doc.objects.filter(id=pk).update(buytotal=0.00, saletotal=0.00)
+        form = ReceiptTableForm(initial={'typedoc': 1,'iddoc_id':CurrentDoc.id })
+
+        docheader = ReceiptDocForm(instance=CurrentDoc,initial={'typedoc':1})
+
+    return render(request,'trade/CurrentReceiptDoc.html',{'title': 'Новый документ (Поступление)','form':form,
+    'currenttable':CurrentTable,'currentdoc':CurrentDoc,'docheader':docheader})
+
+def UpdateDocString(request,pk):
+    id = DocJurnal.objects.get(pk=pk)
+    CurrentTable = DocJurnal.objects.filter(iddoc_id=id.iddoc_id)
+    CurrentDoc = Doc.objects.get(pk=id.iddoc_id)
+    if request.method == 'POST':
+        docheader = InitialDocForm(request.POST)
+        if 'FormHeader' in request.POST:
+            print(request.POST)
+            print('YES')
+            CurrentDoc.nomerdoc = request.POST.get("nomerdoc")
+            CurrentDoc.datadoc = request.POST.get("datadoc")
+            CurrentDoc.save()
+            return redirect('InitialDoc')
+        form = InitialTableForm(request.POST)
+        if form.is_valid():
+            print(request.POST)
+            CurrentString=DocJurnal.objects.get(pk=pk)
+            CurrentString.title_id=request.POST.get("title")
+            CurrentString.volume=request.POST.get("volume")
+            CurrentString.percent = request.POST.get("percent")
+            CurrentString.saleprice = request.POST.get("saleprice")
+            CurrentString.buyprice = request.POST.get("buyprice")
+            CurrentString.buytotal = request.POST.get("buytotal")
+            CurrentString.saletotal = request.POST.get("saletotal")
+
+            CurrentString.save()
+            sum_buy = DocJurnal.objects.filter(iddoc_id=id.iddoc_id).aggregate(Sum('buytotal'))
+            sum_sale = DocJurnal.objects.filter(iddoc_id=id.iddoc_id).aggregate(Sum('saletotal'))
+
+            Doc.objects.filter(id=id.iddoc_id).update(buytotal=sum_buy['buytotal__sum'], saletotal=sum_sale['saletotal__sum'])
+            if sum_sale['saletotal__sum'] == None and sum_buy['buytotal__sum'] == None:
+                Doc.objects.filter(id=pk).update(buytotal=0.00, saletotal=0.00)
+            url = reverse('UpdateInitialDoc', kwargs={'pk': CurrentDoc.id})
+            return HttpResponseRedirect(url)
+    else:
+        id = DocJurnal.objects.get(pk=pk)
+        CurrentTable = DocJurnal.objects.filter(iddoc_id=id.iddoc_id)
+        CurrentDoc = Doc.objects.get(pk=id.iddoc_id)
+        sum_buy = DocJurnal.objects.filter(iddoc_id=id.iddoc_id).aggregate(Sum('buytotal'))
+        sum_sale = DocJurnal.objects.filter(iddoc_id=id.iddoc_id).aggregate(Sum('saletotal'))
+        Doc.objects.filter(id=id.iddoc_id).update(buytotal=sum_buy['buytotal__sum'], saletotal=sum_sale['saletotal__sum'])
+        if sum_sale['saletotal__sum'] == None and sum_buy['buytotal__sum'] == None:
+            Doc.objects.filter(id=id.iddoc_id).update(buytotal=0.00, saletotal=0.00)
+        form = InitialTableForm(instance=id)
+        docheader = InitialDocForm(instance=CurrentDoc, initial={'typedoc': 2, 'dealer': 13})
+    return render(request, 'trade/UpdateInitialDoc.html', {'title': 'Новый документ (Начальные остатки)', 'form': form,
+                                                            'currenttable': CurrentTable, 'currentdoc': CurrentDoc,
+                                                            'docheader': docheader})
+
+# Редактирование строки приходного документа
+
+def UpdateReceiptDocString(request,pk):
+    id = DocJurnal.objects.get(pk=pk)
+    CurrentTable = DocJurnal.objects.filter(iddoc_id=id.iddoc_id)
+    CurrentDoc = Doc.objects.get(pk=id.iddoc_id)
+    if request.method == 'POST':
+        docheader = ReceiptDocForm(request.POST)
+        if 'FormHeader' in request.POST:
+            print(request.POST)
+            CurrentDoc.nomerdoc = request.POST.get("nomerdoc")
+            CurrentDoc.datadoc = request.POST.get("datadoc")
+            dealer = Saler.objects.get(id=request.POST.get("dealer"))
+            CurrentDoc.dealer = dealer
+
+            CurrentDoc.save()
+            return redirect('ReceiptDoc')
+        form = ReceiptTableForm(request.POST)
+        if form.is_valid():
+            print(request.POST)
+            CurrentString=DocJurnal.objects.get(pk=pk)
+            CurrentString.title_id=request.POST.get("title")
+            CurrentString.volume=request.POST.get("volume")
+            CurrentString.percent = request.POST.get("percent")
+            CurrentString.saleprice = request.POST.get("saleprice")
+            CurrentString.buyprice = request.POST.get("buyprice")
+            CurrentString.buytotal = request.POST.get("buytotal")
+            CurrentString.saletotal = request.POST.get("saletotal")
+
+            CurrentString.save()
+            sum_buy = DocJurnal.objects.filter(iddoc_id=id.iddoc_id).aggregate(Sum('buytotal'))
+            sum_sale = DocJurnal.objects.filter(iddoc_id=id.iddoc_id).aggregate(Sum('saletotal'))
+
+            Doc.objects.filter(id=id.iddoc_id).update(buytotal=sum_buy['buytotal__sum'], saletotal=sum_sale['saletotal__sum'])
+            if sum_sale['saletotal__sum'] == None and sum_buy['buytotal__sum'] == None:
+                Doc.objects.filter(id=pk).update(buytotal=0.00, saletotal=0.00)
+            url = reverse('UpdateReceiptDoc', kwargs={'pk': CurrentDoc.id})
+            return HttpResponseRedirect(url)
+    else:
+        id = DocJurnal.objects.get(pk=pk)
+        CurrentTable = DocJurnal.objects.filter(iddoc_id=id.iddoc_id)
+        CurrentDoc = Doc.objects.get(pk=id.iddoc_id)
+        sum_buy = DocJurnal.objects.filter(iddoc_id=id.iddoc_id).aggregate(Sum('buytotal'))
+        sum_sale = DocJurnal.objects.filter(iddoc_id=id.iddoc_id).aggregate(Sum('saletotal'))
+        Doc.objects.filter(id=id.iddoc_id).update(buytotal=sum_buy['buytotal__sum'], saletotal=sum_sale['saletotal__sum'])
+        if sum_sale['saletotal__sum'] == None and sum_buy['buytotal__sum'] == None:
+            Doc.objects.filter(id=id.iddoc_id).update(buytotal=0.00, saletotal=0.00)
+        form = ReceiptTableForm(instance=id)
+        docheader = ReceiptDocForm(instance=CurrentDoc, initial={'typedoc': 1})
+    return render(request, 'trade/UpdateReceiptDoc.html', {'title': 'Новый документ (Поступление)', 'form': form,
+                                                            'currenttable': CurrentTable, 'currentdoc': CurrentDoc,
+                                                            'docheader': docheader})
+
 
 def DeleteInitialDoc(request,pk):
     CurrentDoc = Doc.objects.get(pk=pk)
@@ -88,11 +306,20 @@ def DeleteInitialDoc(request,pk):
     return render(request,'trade/DeleteInitialDoc.html',{'title': 'Удаление документа (Начальные остатки)',
     'currenttable':CurrentTable,'currentdoc':CurrentDoc,})
 
+def DeleteReceiptDoc(request,pk):
+    CurrentDoc = Doc.objects.get(pk=pk)
+    CurrentTable = DocJurnal.objects.filter(iddoc_id=pk)
+    return render(request,'trade/DeleteReceiptDoc.html',{'title': 'Удаление документа (Поступление)',
+    'currenttable':CurrentTable,'currentdoc':CurrentDoc,})
+
 def DeleteDoc(request,pk):
     CurrentDoc = Doc.objects.get(pk=pk)
     CurrentDoc.delete()
     return redirect('InitialDoc')
-
+def DeleteRDoc(request,pk):
+    CurrentDoc = Doc.objects.get(pk=pk)
+    CurrentDoc.delete()
+    return redirect('ReceiptDoc')
 # Удаление строки из документа
 def DeleteDocSting(request,pk):
     deleteString= DocJurnal.objects.get(pk=pk)
@@ -106,6 +333,20 @@ def DeleteDocSting(request,pk):
 
 
     return redirect('UpdateInitialDoc',iddoc)
+
+# Удаление записи из документа Приход
+def DeleteRDocSting(request,pk):
+    deleteString= DocJurnal.objects.get(pk=pk)
+    iddoc=deleteString.iddoc_id
+    deleteString.delete()
+    sum_buy = DocJurnal.objects.filter(iddoc_id=iddoc).aggregate(Sum('buytotal'))
+    sum_sale = DocJurnal.objects.filter(iddoc_id=iddoc).aggregate(Sum('saletotal'))
+    Doc.objects.filter(id=iddoc).update(buytotal=sum_buy['buytotal__sum'], saletotal=sum_sale['saletotal__sum'])
+    if sum_sale['saletotal__sum']==None and sum_buy['buytotal__sum'] == None:
+        Doc.objects.filter(id=iddoc).update(buytotal=0.00, saletotal=0.00)
+
+
+    return redirect('UpdateReceiptDoc',iddoc)
 
 # Создание записей в справочниках
 def Create(request, TableName):

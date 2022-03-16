@@ -18,15 +18,15 @@
 
    <h4 class="text-danger">Удаление документа № {{currentdoc.nomerdoc}} от {{currentdoc.datadoc|date:"d.m.Y"}} г.
            <div class="text-end d-inline-block float-right">
-<a href="{% url 'DeleteDoc' currentdoc.pk %}" class="btn btn-danger mb-1 btn-sm">Удалить документ</a>
- <a href="{% url 'InitialDoc' %}" class="btn btn-secondary mb-1 btn-sm">Отмена</a>
+<a href="{% url 'DeleteRDoc' currentdoc.pk %}" class="btn btn-danger mb-1 btn-sm">Удалить документ</a>
+ <a href="{% url 'ReceiptDoc' %}" class="btn btn-secondary mb-1 btn-sm">Отмена</a>
            </div>
 </h4>
 <table class="table table-sm table-bordered mt-0 mb-1 " >
 <tr>
     <th class="deltable text-right text-white">
 
-            Документ №  {{currentdoc.nomerdoc}}  от  {{currentdoc.datadoc|date:"d.m.Y"}}
+            Документ №  {{currentdoc.nomerdoc}}  от  {{currentdoc.datadoc|date:"d.m.Y"}}, организация: {{currentdoc.dealer}}
 
 
     </th>

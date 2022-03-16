@@ -2,30 +2,36 @@
 {% load static %}
 {% block DataArea %}
 <h5 class="mb-3">{{title}}</h5>
-<div>
+
+<div class="scrolltable2">
+    <table class="table table-sm table-bordered table-hover ">
+        <tr class="secondary">
+            <th class="btnblack">Наименование</th>
+
+            <th class="text-center btnblack" colspan="2">Действие</th>
+        </tr>
+        <tr>
+            <th class="btnblack">
+                <div >
     <form action="" method="post">
         {% csrf_token %}
         <div class="form-row pb-1 pl-2 pt-1">
             {{form.title}}
-            {{form.unit}}<a href="{% url 'Create' 'Unit'  %}" class="btn-dark btn btn-sm"
-            title="Открыть справочник">...</a>{{form.category}}<a href="{% url 'Category' %}"
-            class="btn-dark btn btn-sm">...</a>
+            {{form.unit}}{{form.category}}
+            </th><th colspan="2" class="btnblack">
             <div class="text-end ml-1 ">
-                <button type="submit" class="btn btn-primary btn-sm shadow ">Изменить</button>
-                <a href="{% url 'Good'  %}" class="btn btn-secondary btn-sm shadow btnblack ">Отмена </a>
+                <button type="submit" class="btn btn-warning btn-sm shadow ">Изменить</button>
+
             </div>
     </form>
         </div>
-</div>
-<div class="scrolltable">
-    <table class="table table-sm table-bordered table-hover  ">
-        <tr class="secondary">
-            <th class="btnblack">Наименование</th>
-            <th class="text-center btnblack ">Удалить</th>
+ </div>
+            </th>
         </tr>
         {% for item in category %}
-        <tr>
-            <td class="pt-2 pb-0 backcategory" colspan="2" >{% if item.photo %}<img src="{{item.photo.url}}" alt="..." width="30"
+
+<tr>
+            <td class="pt-2 pb-0 btnblack" colspan="3">{% if item.photo %}<img src="{{item.photo.url}}" alt="..." width="30"
             height="30" class="mb-2 rounded-circle">{% endif %}
                 {{item.title}}
             </td>
@@ -33,7 +39,9 @@
         {% for good in goods %}
         {% if item.id == good.category_id %}
         <tr>
-            <td><a href="{% url 'UpdateGoods' good.pk %}" class="text-dark">{{good.title}}, {{good.unit}} </a></td>
+            <td><a href="{% url 'Good' %}" class="text-dark lead">{{good.title}}, {{good.unit}} </a></td>
+         <td class="text-center pt-0 pb-2 " style="vertical-align:middle"><a href="{% url 'UpdateGoods' good.pk %}">
+                <img src="{% static 'trade/images/edit2.png' %}" height="22" style="top:10px"></a></td>
             <td class="text-center pt-0 pb-2 " style="vertical-align:middle"><a href="{% url 'DeleteGoods' good.pk %}">
                 <img src="{% static 'trade/images/delete2.png' %}" height="18" style="top:10px"></a></td>
         </tr>

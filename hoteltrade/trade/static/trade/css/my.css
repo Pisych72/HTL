@@ -37,6 +37,13 @@ display:block;
 overflow-y: auto;
 height:75vh;
 }
+.scrolltable2{
+display:block;
+overflow-y: auto;
+height:82vh;
+}
+
+
 
 .righttext{
 text-align:right;

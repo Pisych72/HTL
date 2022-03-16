@@ -2,27 +2,36 @@
 {% load static %}
 {% block DataArea %}
  <h5 class="mb-3">{{title}}</h5>
-<div >
+
+<div class="scrolltable2" >
+<table class="table table-sm table-bordered table-hover  ">
+   <tr class="secondary">
+    <th class="btnblack">Наименование:</th>
+    <th class="text-center btnblack" colspan="2">Действие</th>
+    </tr>
+    <tr>
+        <th class="btnblack">
+
     <form action="" method="post">
    {% csrf_token %}
         <div class="form-row pb-1 pl-2 pt-1">
     {{form.title}}
-<div class="text-end ml-1 ">
-     <button type="submit" class="btn btn-success btn-sm shadow  ">Добавить</button>
-     <a href="{% url 'Create' tableName %}" class="btn btn-secondary btn-sm shadow btnblack ">Отмена </a>
+
+        </th>
+<th colspan="2" class="btnblack"><div class="text-end ml-1  "><button type="submit" class="btn btn-success btn-sm shadow  ">Добавить</button></div>
+     </th>
+
+
+    </form></th>
 </div>
-    </form>
-</div></div>
-<div class="scrolltable" >
-<table class="table table-sm table-bordered table-hover  ">
-   <tr class="secondary">
-    <th class="btnblack">Наименование:</th>
-    <th class="text-center btnblack">Удалить</th>
+
     </tr>
 {% for item in data %}
 <tr >
-    <td class="pt-2 pb-0" ><a href="{% url 'Update' tableName item.pk %}" class="text-dark lead" ><small>{{item.title}}</small></a></td>
-    <td class="text-center pt-0 pb-2 " style="vertical-align:middle"><a href="{% url 'Delete' tableName item.pk %}" ><img src="{% static 'trade/images/delete2.png' %}" height="18" style="top:10px" ></a></td>
+    <td class="pt-2 pb-0 lead" >{{item.title}}</td>
+
+ <td class="text-center pt-0 pb-2 " style="vertical-align:middle"><a href="{% url 'Update' tableName item.pk %}" ><img src="{% static 'trade/images/edit2.png' %}" height="22" style="top:10px" ></a></td>
+        <td class="text-center pt-0 pb-2 " style="vertical-align:middle"><a href="{% url 'Delete' tableName item.pk %}" ><img src="{% static 'trade/images/delete2.png' %}" height="18" style="top:10px" ></a></td>
 </tr>
 {% endfor %}
 </table>

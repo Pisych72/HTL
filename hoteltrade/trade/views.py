@@ -5,7 +5,8 @@ from django.urls import reverse
 from .models import *
 from .forms import *
 from django.db.models import Sum
-
+uniqueGood={}
+maxvolume=None
 
 def main(request):
     return render(request, 'trade/main.html', {'title': 'Главная страница'})
@@ -525,3 +526,39 @@ def DeleteGoods(request,pk):
         form = GoodForm(instance=goodunit)
     return render(request, 'trade/DeleteGood.html', {'title': title, 'form': form, 'category': category, 'unit': unit,'goods':good})
 
+def GetData(request,message=''):
+    goodcheck=TempCheck.objects.all()
+    data=DocJurnal.objects.order_by('title')
+    categories=Category.objects.order_by('title')
+    uniqueCat= {}
+    unsortedCat={}
+    for good in data:
+        name = good.title
+        price=good.saleprice
+        goodid = good.title.id
+        category=good.title.category.title
+        category_id=good.title.category.id
+        prihod=DocJurnal.objects.filter(title=good.title).filter(typedoc=1).filter(saleprice=price).aggregate(Sum('volume'))
+        ostatok = DocJurnal.objects.filter(title=good.title).filter(typedoc=2).filter(saleprice=price).aggregate(Sum('volume'))
+        spisanie = DocJurnal.objects.filter(title=good.title).filter(typedoc=3).filter(saleprice=price).aggregate(Sum('volume'))
+        cash=DocJurnal.objects.filter(title=good.title).filter(typedoc=4).filter(saleprice=price).aggregate(Sum('volume'))
+        oplata = TempCheck.objects.all().aggregate(Sum('total'))
+        checkoplata=(oplata['total__sum'])
+        uniqid=str(name)+str(price)
+        if prihod['volume__sum'] == None:
+          prihod['volume__sum']=0
+        if ostatok['volume__sum'] == None:
+          ostatok['volume__sum']=0
+        if spisanie['volume__sum'] == None:
+          spisanie['volume__sum']=0
+        if cash['volume__sum'] == None:
+          cash['volume__sum']=0
+        rest=ostatok['volume__sum'] + prihod['volume__sum'] - spisanie['volume__sum'] - cash['volume__sum']
+        unit2 = Good.objects.get(id=goodid)
+        titleunit = unit2.unit.title
+        cellprice=int(price)
+        uniqueGood[uniqid] = name, category, price, rest, category_id, titleunit,goodid,cellprice
+        unsortedCat[category_id]=category
+        uniqueCat=sorted(unsortedCat.values())
+    context={'data':data,'categories':categories,'uniqueCat':uniqueCat,'uniqueGood':uniqueGood,'goodcheck':goodcheck,'checkoplata':checkoplata,'checkstring':message}
+    return render(request,'trade/GetTradeCategory2.html',context)

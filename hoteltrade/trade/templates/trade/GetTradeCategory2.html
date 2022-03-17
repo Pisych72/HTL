@@ -1,0 +1,125 @@
+{% extends 'trade/trade.html' %}
+{% load static %}
+{% block title %}{{title}}{% endblock title %}
+
+{% block DataArea %}
+
+<div  >
+
+
+
+
+
+<h4>Номенклатура</h4>
+
+ <div style="display:block;overflow-y: auto; height:575px;"  >
+<table class="table table-bordered  table-hover mb-5 table-sm" >
+    <thead class="btnblack "><tr>
+
+    <th class="btnblack"  >Наименование</th>
+    <th class="text-center">Ед.изм</th>
+     <th class="text-center">Цена</th>
+      <th class="text-center">В наличии</th>
+    </tr></thead>
+    {% for key in uniqueCat %}
+{% for category in categories %}
+{% if category.title == key %}
+    <tr>
+        <td colspan="4" style="background-color:Gainsboro;">
+      <a name={{category.id}}></a> <img src="{{category.photo.url}}"  alt="..." width="45" height="45" title={{category.title}} class="mb-2 rounded-circle">
+            <strong> {{category.title}}</strong>
+        </td>
+
+</tr>
+    {% for key,value in uniqueGood.items %}
+    {% if value.1 == category.title %}
+    {% if value.3 != 0 %}
+    <tr>
+        <td ><a href="#" class="text-dark "> {{value.0}}</a></td>
+        <td class="text-center">{{value.5}}</td>
+         <td style="text-align:right">{{value.2|floatformat:2}}</td>
+         <td style="text-align:center" >{{value.3|floatformat:2}} </td>
+    </tr>
+    {% endif %}
+    {% endif %}
+    {% endfor %}
+    {% endif %}
+{% endfor %}
+{% endfor %}
+
+
+
+</table>
+
+</div>
+
+</div>
+<hr>
+
+
+
+{% endblock DataArea %}
+
+{% block CheckArea %}
+
+<h4 style=" display:inline">Кассовый чек</h4>
+
+
+<div style="display:block;overflow-y: auto; height:550px;"  >
+    {{checkstring}}
+<table class="table table-bordered  table-hover mb-5 table-sm mt-2" >
+    <thead class="btnblack "><tr>
+
+    <th  >Наименование</th>
+
+     <th >Цена</th>
+        <th class="bg-primary"></th>
+      <th >Кол-во</th>
+        <th class="bg-success" ></th>
+        <th >Сумма</th>
+        <th class="bg-danger"></th>
+    </tr></thead>
+
+{% for item in goodcheck %}
+
+<tr>
+    <td>{{item.title}}, {{item.unit}}</td>
+    <td style="text-align:right">{{item.price|floatformat:2}}</td>
+    <td><a href="#"><button  class="btn btn-secondary btn-sm" title="Убавить" >-</button> </a></td>
+    <td style="text-align:right">{{item.volume|floatformat:2}}</td>
+       <td> <a href="#"><button id="btn{{item.idgood}}{{item.price|floatformat:'0' }}" class="btn btn-secondary btn-sm" title="Добавить"
+        >+</button></a>
+    </td>
+
+    <td style="text-align:right">{{item.total|floatformat:2}}</td>
+    <td> <a href=""><button class="btn btn-danger btn-sm" title="Удалить">x</button></a></td>
+</tr>
+
+{% endfor %}
+
+{% if checkoplata != None%}
+    <tr >
+    <td colspan="5">
+<h5>К оплате: </h5></td>
+        <td  style="text-align:right"><h5>{{checkoplata|floatformat:2}}</h5></td>
+        <td><strong>руб.</strong></td>
+    </tr>
+{% endif %}
+</table>
+{% if checkoplata != None%}
+<table class="table  table-hover mt-4 table-sm">
+ <thead class="thead-secondary"><tr>
+<th class="thead-dark">
+     <a href="#"class="btn btn-primary d-block shadow" title="Оплата наличными">Оплата наличными</a>
+    </th>
+ <th class="thead-dark ">
+     <a href="W" class="btn btn-success d-block shadow" title="Оплата банковской картой">Оплата банковской картой</a>
+    </th>
+<th >
+    <a href="W" class="btn btn-secondary d-block shadow " title="Удалить все позиции чека">Отмена чека</a>
+    </th>
+    </tr></thead>
+</table>
+{% endif %}
+</div>
+{% endblock CheckArea %}

@@ -33,6 +33,8 @@ urlpatterns=[
    path('UpdateReceiptDoc/<str:pk>', UpdateReceiptDoc, name='UpdateReceiptDoc'),
    path('UpdateReceiptDocString/<str:pk>',UpdateReceiptDocString,name='UpdateReceiptDocString'),
    path('DeleteRDocString/<str:pk>',DeleteRDocSting,name='DeleteRDocString'),
+   path('GetData',GetData,name='GetData'),
+
 ]
 
 if settings.DEBUG:

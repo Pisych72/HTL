@@ -1,0 +1,78 @@
+{% load static %}
+ <!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{title}}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" href="{% static 'trade/css/bootstrap.css' %}"  rel="stylesheet">
+    <link rel="shortcut icon" href="{% static 'trade/images/trade.ico' %}" type="image/x-icon">
+    <link type="text/css" href="{% static 'trade/css/my.css' %}"  rel="stylesheet">
+
+
+</head>
+<body>
+<div class="container border shadow ">
+    <div class="row">
+        <div class="col-md-12 mb-1 myback header1 ">
+
+            <h3 class="mt-1 text-white "> <img src="{% static 'trade/images/hotel4.png' %}" class="mr-2 logo">Гостиница АО ЕнСПК  </h3></div>
+    </div>
+<div class="row">
+     <div class="col-md-1 mb-1 myback" style="min-height:calc(100vh - 88px);"  >
+ <a href="{% url 'home' %}"><img src="{% static 'trade/images/back.png' %}"  alt="..." width="53" height="53" title="На главную" ></a>
+{% block LinkArea %}
+{% endblock LinkArea %}
+</div>
+
+
+    <div class="col-md-6  shadow ">
+{% block DataArea %}
+DataArea
+{% endblock DataArea %}
+     </div>
+ <div class="col-md-5  shadow ">
+{% block CheckArea %}
+DataArea
+{% endblock CheckArea %}
+     </div>
+</div>
+
+
+
+ <div class="row">
+    <div class="col-md-12 text-right myback text-white" >
+            АО "ЕнСПК" - 2021
+    </div>
+</div>
+</div>
+<script type="text/javascript">
+    function CheckVolume(event){
+    var value0=event.target.id
+    var value1=value0.replace('btn','check')
+    var value2=value0.replace('btn','good')
+    var value3=document.getElementById(value1).innerText
+    alert(value3)
+    }
+
+  function getResult(){
+    var volume = document.getElementById("id_volume");
+    var buyprice = document.getElementById("id_buyprice");
+    var buytotal = document.getElementById("id_buytotal");
+    var saleprice = document.getElementById("id_saleprice");
+    var saletotal = document.getElementById("id_saletotal");
+    var percent = document.getElementById("id_percent");
+
+
+    buytotal.value=Math.round(volume.value*buyprice.value);
+    saleprice.value= Math.round(buyprice.value*((percent.value/100)+1));
+    saletotal.value=Math.round(saleprice.value*volume.value);
+
+
+  }
+
+</script>
+
+</body>
+</html>

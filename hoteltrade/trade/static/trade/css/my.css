@@ -42,7 +42,11 @@ display:block;
 overflow-y: auto;
 height:82vh;
 }
-
+.scrolltable3{
+display:block;
+overflow-y: auto;
+height:50vh;
+}
 
 
 .righttext{

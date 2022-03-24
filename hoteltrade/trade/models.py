@@ -92,16 +92,17 @@ class Doc(models.Model):
 class DocJurnal(models.Model):
     iddoc=models.ForeignKey(Doc,verbose_name='Документ',on_delete=models.CASCADE)
     title=models.ForeignKey(Good,verbose_name='Наименование товара',on_delete=models.CASCADE)
-    volume=models.DecimalField(max_digits=8,decimal_places=2,blank=True)
-    buyprice=models.DecimalField(max_digits=8,decimal_places=2,blank=True)
-    percent=models.DecimalField(max_digits=8,decimal_places=2,blank=True)
-    saleprice=models.DecimalField(max_digits=8,decimal_places=2,blank=True)
-    buytotal=models.DecimalField(max_digits=8,decimal_places=2,blank=True)
-    saletotal=models.DecimalField(max_digits=8,decimal_places=2,blank=True)
+    volume=models.FloatField(blank=True)
+    buyprice=models.FloatField(blank=True)
+    percent=models.FloatField(blank=True)
+    saleprice=models.FloatField(blank=True)
+    buytotal=models.FloatField(blank=True)
+    saletotal=models.FloatField(blank=True)
     updated_at = models.DateTimeField(auto_now=True, verbose_name='Создан')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Обновлен')
     typedoc=models.IntegerField(null=True)
     nomercheck=models.IntegerField(blank=True,null=True,verbose_name='Номер чека')
+
     class Meta:
         verbose_name='Наименование'
         verbose_name_plural='Наименования'
@@ -116,10 +117,13 @@ class TempCheck(models.Model):
     idgood=models.IntegerField()
     title=models.CharField(max_length=100)
     unit=models.CharField(max_length=50)
-    volume=models.DecimalField(max_digits=8,decimal_places=2,blank=True)
-    price=models.DecimalField(max_digits=8,decimal_places=2,blank=True)
-    total=models.DecimalField(max_digits=8,decimal_places=2,blank=True)
-    maxvolume=models.DecimalField(max_digits=8,decimal_places=2,blank=True)
+    volume=models.FloatField(blank=True)
+    price=models.FloatField(blank=True)
+    total=models.FloatField(blank=True)
+    maxvolume=models.FloatField(blank=True)
     updated_at = models.DateTimeField(auto_now=True, verbose_name='Создан')
     def __str__(self):
         return self.title
+
+
+

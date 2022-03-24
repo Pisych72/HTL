@@ -1,0 +1,58 @@
+{% extends 'trade/DocPage.html' %}
+{% load static %}
+{% block LinkArea %}
+<h4 class="text-white">Документы</h4>
+
+
+     <a href="{% url 'ReceiptDoc' %}" class="btn btn-secondary border border-white  nav-link mb-1 btnblack">Поступление </a>
+       <a href="{% url 'InitialDoc' %}" class="btn btn-secondary border border-white  nav-link mb-1 btnblack">Ввод остатков</a>
+<a href="{% url 'Create' 'Unit' %}" class="btn btn-secondary border border-white  nav-link mb-1 btnblack">Списание </a>
+<a href="{% url 'CheckJurnal' %}" class="btn btn-secondary border border-white  nav-link mb-1 btnblack">Кассовые чеки </a>
+
+<a href="{% url 'home' %}" class="btn btn-secondary border border-white  nav-link mb-1 addbtn">На главную</a>
+
+{% endblock LinkArea %}
+{% block DataArea %}
+
+
+<h4 >Журнал кассовых чеков</h4>
+<div class="scrolltable ">
+ {% for date in uniqdate %}
+
+<b>{{date}}</b>
+<div class="row col-12 ">
+
+
+  <!-- Заставит следующие столбцы переходить на новую строку -->
+
+
+
+
+
+
+    {% for check in checkdoc %}
+
+        {% if check.datadoc == date %}
+        {% if check.typedoc_id == 4 %}
+ <div class="col-2 bg-primary ml-4 mb-2 text-white">{{check.nomerdoc}}{{check.datadoc}}  {{check.id}}
+  {{check.saletotal}} {{check.typedoc}}</div>
+    {% else %}
+<div class="col-2 bg-success ml-4 mb-2 text-white">{{check.nomerdoc}}{{check.datadoc}}  {{check.id}}
+  {{check.saletotal}} {{check.typedoc}}</div>
+    {% endif %}
+    {% endif %}
+
+    {% endfor %}
+</div>
+
+    {% endfor %}
+
+
+</div>
+
+
+
+
+
+
+{% endblock DataArea %}

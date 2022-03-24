@@ -34,7 +34,14 @@ urlpatterns=[
    path('UpdateReceiptDocString/<str:pk>',UpdateReceiptDocString,name='UpdateReceiptDocString'),
    path('DeleteRDocString/<str:pk>',DeleteRDocSting,name='DeleteRDocString'),
    path('GetData',GetData,name='GetData'),
-
+   path('GoodToCheck/<str:pk>/<str:price>',GoodToCheck,name='GoodToCheck'),
+   path('DeleteCheckRecord/<str:pk>',DeleteCheckRecord,name='DeleteCheckRecord'),
+   path('IncVolume/<str:pk>',IncVolume,name='IncVolume'),
+   path('DecVolume/<str:pk>', DecVolume, name='DecVolume'),
+   path('DeleteCheck',DeleteCheck,name='DeleteCheck'),
+   path('CashCheck',CashCheck,name='CashCheck'),
+   path('TerminalCheck',TerminalCheck,name='TerminalCheck'),
+   path('CheckJurnal',CheckJurnal,name='CheckJurnal'),
 ]
 
 if settings.DEBUG:

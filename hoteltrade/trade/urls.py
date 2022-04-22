@@ -5,7 +5,9 @@ from hoteltrade import settings
 from .views import *
 
 urlpatterns=[
-   path('',main,name='home'),
+   path('',loginUser,name='loginUser'),
+   path('out/',UserOut,name='UserOut'),
+   path('main/',main,name='home'),
    path('listpage/',listpage,name='listpage'),
    path('Create/<TableName>',Create,name='Create'),
    path('Delete/<TableName>/<str:pk>',Delete,name='Delete'),
@@ -35,13 +37,14 @@ urlpatterns=[
    path('DeleteRDocString/<str:pk>',DeleteRDocSting,name='DeleteRDocString'),
    path('GetData',GetData,name='GetData'),
    path('GoodToCheck/<str:pk>/<str:price>',GoodToCheck,name='GoodToCheck'),
-   path('DeleteCheckRecord/<str:pk>',DeleteCheckRecord,name='DeleteCheckRecord'),
-   path('IncVolume/<str:pk>',IncVolume,name='IncVolume'),
-   path('DecVolume/<str:pk>', DecVolume, name='DecVolume'),
+   path('DeleteCheckRecord/<str:pk>/<str:price>',DeleteCheckRecord,name='DeleteCheckRecord'),
+   path('IncVolume/<str:pk>/<str:price>',IncVolume,name='IncVolume'),
+   path('DecVolume/<str:pk>/<str:price>', DecVolume, name='DecVolume'),
    path('DeleteCheck',DeleteCheck,name='DeleteCheck'),
-   path('CashCheck',CashCheck,name='CashCheck'),
-   path('TerminalCheck',TerminalCheck,name='TerminalCheck'),
+   path('CashCheck/<mode>',CashCheck,name='CashCheck'),
+
    path('CheckJurnal',CheckJurnal,name='CheckJurnal'),
+   path('Proba/<str:pk>',Proba,name='Proba'),
 ]
 
 if settings.DEBUG:

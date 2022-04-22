@@ -21,33 +21,30 @@
      <th class="text-center">Цена</th>
       <th class="text-center">В наличии</th>
     </tr></thead>
-    {% for key in uniqueCat %}
-{% for category in categories %}
-{% if category.title == key %}
+
+{% for category in categories.values %}
+
     <tr>
         <td colspan="4" style="background-color:Gainsboro;">
-      <a name={{category.id}}></a> <img src="{{category.photo.url}}"  alt="..." width="45" height="45" title={{category.title}} class="mb-2 rounded-circle">
-            <strong> {{category.title}}</strong>
+      <img src="../../media/{{category.1}}"  alt="..." width="25" height="25"  class="mb-2 rounded-circle">
+            <strong> {{category.0}}</strong>
         </td>
-
 </tr>
-    {% for key,value in uniqueGood.items %}
-    {% if value.1 == category.title %}
-    {% if value.3 != 0 %}
+{% for item in data.values %}
+
+    {% if item.5 == category.2 %}
     <tr>
-        <td ><a href="{% url 'GoodToCheck' value.6 value.2 %}" class="text-dark "> {{value.0}}</a></td>
-        <td class="text-center">{{value.5}}</td>
-         <td style="text-align:right">{{value.2|floatformat:2}}</td>
-         <td style="text-align:center" >{{value.3|floatformat:2}} </td>
+        <td ><a href="{% url 'GoodToCheck' item.0 item.2 %}" class="text-dark "> {{item.0}}</a></td>
+
+        <td class="text-center">{{item.4}}</td>
+         <td style="text-align:right">{{item.2|floatformat:2}}</td>
+         <td style="text-align:center" >{{item.6|floatformat:2}} </td>
     </tr>
     {% endif %}
-    {% endif %}
+{% endfor %}
+
+
     {% endfor %}
-    {% endif %}
-{% endfor %}
-{% endfor %}
-
-
 
 </table>
 
@@ -63,12 +60,11 @@
 {% block CheckArea %}
 
 <h4 style=" display:inline">Кассовый чек
-    {% if checkstring == 'Чек проведен' %}
-    <span class="mediumtext text-success float-right mt-1">{{checkstring}}</span>
-    {% endif %}
-    {% if checkstring == 'Продажа отменена' %}
-    <span class="mediumtext text-danger float-right mt-1">{{checkstring}}</span>
-    {% endif %}
+
+    <span class="mediumtext text-primary float-right mt-1">{{msg}}</span>
+
+
+
 </h4>
 
 
@@ -87,37 +83,37 @@
         <th class=" text-center mml-1" style="width:10px">x</th>
     </tr></thead>
 
-{% for item in goodcheck %}
+{% for item in toCheck.values %}
 
 <tr>
     <td>{{item.title}}, {{item.unit}}</td>
     <td style="text-align:right">{{item.price|floatformat:2}}</td>
-    <td><a href="{% url 'DecVolume' item.pk %}"><button  class="btn btn-secondary btn-sm  " title="Убавить" >-</button> </a></td>
+    <td><a href="{% url 'DecVolume' item.title item.price %}"><img src="{% static 'trade/images/minus.png' %}" width="20" height="20"> </a></td>
     <td style="text-align:right">{{item.volume|floatformat:2}}</td>
-       <td> <a href="{% url 'IncVolume' item.pk %}"><button id="btn{{item.idgood}}{{item.price|floatformat:'0' }}" class="btn btn-secondary btn-sm" title="Добавить"
-        >+</button></a>
+       <td> <a href="{% url 'IncVolume' item.title item.price %}"><img src="{% static 'trade/images/add.png' %}" width="20" height="20"></a>
     </td>
 
-    <td style="text-align:right">{{item.total|floatformat:2}}</td>
-    <td> <a href="{% url 'DeleteCheckRecord' item.pk %}"><button class="btn btn-secondary btn-sm " title="Удалить">x</button></a></td>
+    <td style="text-align:right;verical-aligh:bottom">{{item.total|floatformat:2}}</td>
+    <td> <a href="{% url 'DeleteCheckRecord' item.title item.price %}"><img src="{% static 'trade/images/cross.png' %}" width="24" height="24" ></a></td>
 </tr>
 
 {% endfor %}
 
-{% if checkoplata != None%}
+{% if summaCheck != 0%}
     <tr >
     <td colspan="5" class="btnblack">
 <h5>К оплате: </h5></td>
-        <td  style="text-align:right" class="btnblack"><h5>{{checkoplata|floatformat:2}}</h5></td>
+        <td  style="text-align:right" class="btnblack"><h5>{{summaCheck|floatformat:2}}</h5></td>
         <td class="btnblack"><strong>руб.</strong></td>
     </tr>
 {% endif %}
 </table>
+  {% if summaCheck != 0%}
 
-{% if checkoplata != None%}
 
-   <div class="text-end d-inline-block float-right"><a href="{% url 'TerminalCheck' %}" class="btn btn-primary">Терминал</a>
-    <a href="{% url 'CashCheck' %}" class="btn btn-success">Наличные</a>
+
+   <div class="text-end d-inline-block float-right"><a href="{% url 'CashCheck' 5 %}" class="btn btn-primary">Терминал</a>
+    <a href="{% url 'CashCheck' 4 %}" class="btn btn-success">Наличные</a>
     <a href="{% url 'DeleteCheck' %}" class="btn btn-secondary">Отмена</a></div>
 
 {% endif %}

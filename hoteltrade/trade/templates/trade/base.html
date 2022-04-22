@@ -17,7 +17,12 @@
     <div class="row">
         <div class="col-md-12 mb-1 myback header1 ">
 
-            <h3 class="mt-1 text-white "> <img src="{% static 'trade/images/hotel4.png' %}" class="mr-2 logo">Гостиница АО ЕнСПК  </h3></div>
+            <h3 class="mt-1 text-white "> <img src="{% static 'trade/images/hotel4.png' %}" class="mr-2 logo">Гостиница АО ЕнСПК
+                {% if request.user.is_authenticated %}
+                <span style="float:right;font-size:16px;margin-top:12px;">{{user.first_name}} {{user.last_name}} | <a href="{% url 'UserOut' %}" style="font-size:16px;margin-top:12px;">Выйти</a> </span>
+            {% endif %}
+            </h3> </div>
+
     </div>
 <div class="row">
     <div class="col-md-2 mb-1 myback" style="min-height:calc(100vh - 88px);"  >

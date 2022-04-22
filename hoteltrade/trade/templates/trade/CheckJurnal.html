@@ -19,7 +19,7 @@
 <div class="scrolltable ">
  {% for date in uniqdate %}
 
-<b>{{date}}</b>
+<div class="bg-secondary text-white mb-2 pl-4"> {{date}}   {{  date|date:"d.m.Y"}} </div>
 <div class="row col-12 ">
 
 
@@ -33,17 +33,28 @@
     {% for check in checkdoc %}
 
         {% if check.datadoc == date %}
-        {% if check.typedoc_id == 4 %}
- <div class="col-2 bg-primary ml-4 mb-2 text-white">{{check.nomerdoc}}{{check.datadoc}}  {{check.id}}
-  {{check.saletotal}} {{check.typedoc}}</div>
-    {% else %}
-<div class="col-2 bg-success ml-4 mb-2 text-white">{{check.nomerdoc}}{{check.datadoc}}  {{check.id}}
-  {{check.saletotal}} {{check.typedoc}}</div>
+
+    <div class="col-2  ml-4 mb-2 border bordered ">  <span style="font-size:14px;"><b>{{check.typedoc}}</b></span><br>  <span style="font-size:12px;">{{check.updated_at|date:"Время: H:i"}}</span>
+
+ {% for item in checkitem %}
+    {% if item.iddoc_id == check.id %}
+     <span style="font-size:12px;">{{item.title}}-{{item.volume}}*{{item.saleprice}}={{item.saletotal}}</span><br>
     {% endif %}
+    {% endfor %}
+        <span style="font-size:12px;">Кассир: {{check.user}}</span>
+        <b>Итого: {{check.saletotal}}</b>
+ </div>
+
+
     {% endif %}
 
     {% endfor %}
+
 </div>
+{% for key, value in uniqsum.items %}
+    {{value}}
+{% endfor %}
+
 
     {% endfor %}
 

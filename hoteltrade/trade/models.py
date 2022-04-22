@@ -80,6 +80,7 @@ class Doc(models.Model):
     saletotal=models.DecimalField(max_digits=8,decimal_places=2,default=0.00)
     transaction=models.BooleanField(verbose_name='Проведен',default=False)
     typedoc=models.ForeignKey(TypeDoc,verbose_name='Тип документа',on_delete=models.PROTECT)
+    user=models.CharField(max_length=100,verbose_name='Пользователь',blank=True,null=True,default='')
     def __str__(self):
         return str(self.nomerdoc)
     class Meta:
@@ -102,7 +103,7 @@ class DocJurnal(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Обновлен')
     typedoc=models.IntegerField(null=True)
     nomercheck=models.IntegerField(blank=True,null=True,verbose_name='Номер чека')
-
+    user = models.CharField(max_length=100, verbose_name='Пользователь', blank=True, null=True, default='')
     class Meta:
         verbose_name='Наименование'
         verbose_name_plural='Наименования'

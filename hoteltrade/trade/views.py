@@ -5,12 +5,24 @@ from django.core.exceptions import ObjectDoesNotExist
 from .models import *
 from .forms import *
 from django.db.models import Sum
+from django.contrib import messages
 import datetime
+from django.db.models import Q
+from django.contrib.auth import authenticate,login,logout
+from django.contrib.auth.models import *
 uniqueGood={}
+unDict={}
+toCheck={}
+checkSumma=0
+message=''
 maxvolume=None
 
 def main(request):
-    return render(request, 'trade/main.html', {'title': 'Главная страница'})
+    gruppa = request.user.groups.all()[0]
+    if request.user.is_authenticated:
+        gruppa = str(request.user.groups.all()[0])
+    print(type(gruppa),gruppa)
+    return render(request, 'trade/main.html', {'title': 'Главная страница','gruppa':gruppa})
 
 def listpage(request):
     return render(request, 'trade/listpage.html', {'title': 'Справочники'})
@@ -527,197 +539,164 @@ def DeleteGoods(request,pk):
         form = GoodForm(instance=goodunit)
     return render(request, 'trade/DeleteGood.html', {'title': title, 'form': form, 'category': category, 'unit': unit,'goods':good})
 
-def GetData(request,message=''):
-    unArray= []
-
-    uniq=DocJurnal.objects.all()
-
-
-    for item in uniq:
-        s=str(item.title_id),item.saleprice
-        if not s in unArray:
-            unArray.append(s)
-    for i in unArray:
-        a=int(i[0])
-        b=i[1]
-
-        ostatok=DocJurnal.objects.filter(title_id=a).filter(saleprice=b).filter(typedoc=2).aggregate(Sum('volume'))
-        print(ostatok)
-
-    print(unArray)
-    print(len(unArray))
-    print(len(uniq))
-    goodcheck=TempCheck.objects.all()
-    data=DocJurnal.objects.order_by('title')
-    categories=Category.objects.order_by('title').filter(photos__isnull=False).distinct()
-    uniqueCat= {}
-    unsortedCat={}
-    for good in data:
-        name = good.title
-        price=good.saleprice
-        goodid = good.title.id
-        category=good.title.category.title
-        category_id=good.title.category.id
-        prihod=DocJurnal.objects.filter(title=good.title).filter(typedoc=1).filter(saleprice=price).aggregate(Sum('volume'))
-        ostatok = DocJurnal.objects.filter(title=good.title).filter(typedoc=2).filter(saleprice=price).aggregate(Sum('volume'))
-        spisanie = DocJurnal.objects.filter(title=good.title).filter(typedoc=3).filter(saleprice=price).aggregate(Sum('volume'))
-        cash=DocJurnal.objects.filter(title=good.title).filter(typedoc=4).filter(saleprice=price).aggregate(Sum('volume'))
-        term = DocJurnal.objects.filter(title=good.title).filter(typedoc=5).filter(saleprice=price).aggregate(
+# Получение товаров и категорий в наличии
+def GetData(request,msg=''):
+    #unDict={}
+    uniq=sorted(list(set(DocJurnal.objects.values_list('title_id__title','title_id','saleprice','title_id__category__title','title_id__unit__title','title_id__category__id'))))
+    for i in uniq:
+        ost = DocJurnal.objects.filter(title_id=i[1]).filter(typedoc=2).filter(saleprice=i[2]).aggregate(
+             Sum('volume'))
+        prih = DocJurnal.objects.filter(title_id=i[1]).filter(typedoc=1).filter(saleprice=i[2]).aggregate(
+             Sum('volume'))
+        spis = DocJurnal.objects.filter(title_id=i[1]).filter(typedoc=3).filter(saleprice=i[2]).aggregate(
+             Sum('volume'))
+        nal = DocJurnal.objects.filter(title_id=i[1]).filter(typedoc=4).filter(saleprice=i[2]).aggregate(
             Sum('volume'))
-        oplata = TempCheck.objects.all().aggregate(Sum('total'))
-        checkoplata=(oplata['total__sum'])
-        uniqid=str(name)+str(price)
-        if term['volume__sum'] == None:
-          term['volume__sum']=0
-        if prihod['volume__sum'] == None:
-          prihod['volume__sum']=0
-        if ostatok['volume__sum'] == None:
-          ostatok['volume__sum']=0
-        if spisanie['volume__sum'] == None:
-          spisanie['volume__sum']=0
-        if cash['volume__sum'] == None:
-          cash['volume__sum']=0
-        rest=ostatok['volume__sum'] + prihod['volume__sum'] - spisanie['volume__sum'] - cash['volume__sum'] - term['volume__sum']
-        unit2 = Good.objects.get(id=goodid)
-        titleunit = unit2.unit.title
-        cellprice=int(price)
-        uniqueGood[uniqid] = name, category, price, rest, category_id, titleunit,goodid,cellprice
-        unsortedCat[category_id]=category
-        uniqueCat=sorted(unsortedCat.values())
-    context={'data':data,'categories':categories,'uniqueCat':uniqueCat,'uniqueGood':uniqueGood,'goodcheck':goodcheck,'checkoplata':checkoplata,'checkstring':message,
-             'title':'Торговля'}
+        bank = DocJurnal.objects.filter(title_id=i[1]).filter(typedoc=5).filter(saleprice=i[2]).aggregate(
+            Sum('volume'))
+        otmena = DocJurnal.objects.filter(title_id=i[1]).filter(typedoc=6).filter(saleprice=i[2]).aggregate(
+            Sum('volume'))
+        if ost['volume__sum'] == None:
+           ost["volume__sum"]=0
+        if prih['volume__sum'] == None:
+           prih["volume__sum"]=0
+        if spis['volume__sum'] == None:
+           spis["volume__sum"]=0
+        if nal['volume__sum'] == None:
+           nal["volume__sum"] = 0
+        if bank['volume__sum'] == None:
+           bank["volume__sum"]=0
+        if otmena['volume__sum'] == None:
+           otmena["volume__sum"]=0
+        ostatok=ost['volume__sum']+prih['volume__sum']-nal['volume__sum']-bank['volume__sum']-spis['volume__sum']+otmena['volume__sum']
+        key=str(i[0])+str(i[2])
+        if ostatok > 0:
+            unDict[key]=i[0],i[1],i[2],i[3],i[4],i[5],ostatok
+            #print(unDict[key])
+
+    categories={}
+    categorylist=sorted(list(set(DocJurnal.objects.values_list('title_id__category__title','title_id__category__photo','title_id__category_id'))))
+
+    for i in categorylist:
+        key=i[2]
+        categories[key]=i[0],i[1],i[2]
+    tmp = list(toCheck.keys())
+    Summa = 0
+    for i in tmp:
+        Summa = Summa + (toCheck[i]['total'])
+
+    checkSumma = Summa
+
+    context={'data':unDict,'categories':categories,'title':'Продажи','toCheck':toCheck,'summaCheck':checkSumma,'msg':msg}
+    print(msg)
     return render(request,'trade/GetTradeCategory2.html',context)
 
+def Proba(request,pk):
+    return GetData(request)
+
 def GoodToCheck(request,pk,price):
-    cureentrecord=Good.objects.get(id=pk)
-    fromjurnal=DocJurnal.objects.filter(title_id=pk).filter(saleprice=price)
 
-    for item in fromjurnal:
-        price=item.saleprice
-        uniqkey=str(item.title)+str(item.saleprice)
-        maxvolume = uniqueGood[uniqkey]
-    try:
-        temprecord=TempCheck.objects.get(idgood=pk,price=price)
-        temprecord.volume = temprecord.volume
-        temprecord.total = temprecord.price * temprecord.volume
-        temprecord.save()
-    except ObjectDoesNotExist:
-        temprecord=TempCheck()
-        temprecord.idgood=pk
-        temprecord.title=cureentrecord.title
-        temprecord.unit=cureentrecord.unit.title
-        temprecord.volume=1
-        temprecord.maxvolume=maxvolume[3]
-        temprecord.price=price
-        temprecord.total=temprecord.price*temprecord.volume
-        temprecord.save()
-    return GetData(request,'')
+    dict_key=str(pk+price)
 
-def DeleteCheckRecord(request,pk):
-    curr=TempCheck.objects.get(id=pk)
-    print(curr.title)
-    curr.delete()
-    return GetData(request,'')
+    toCheck[dict_key] ={
+        'title':unDict[dict_key][0],
+        'title_id':unDict[dict_key][1],
+        'price':unDict[dict_key][2],
+        'category':unDict[dict_key][3],
+        'unit':unDict[dict_key][4],
+        'ostatok':unDict[dict_key][6],
+        'volume': 1,
+         }
+    toCheck[dict_key]['total']=toCheck[dict_key]['price']*toCheck[dict_key]['volume']
 
-def IncVolume(request,pk):
-    curr = TempCheck.objects.get(id=pk)
-    if curr.volume < curr.maxvolume:
-        curr.volume=curr.volume+1
 
-    curr.total=curr.volume*curr.price
-    curr.save()
-    return GetData(request,'')
+    return GetData(request)
 
-def DecVolume(request,pk):
-    curr = TempCheck.objects.get(id=pk)
-    if curr.volume !=1:
-       curr.volume=curr.volume-1
-       curr.total=curr.volume*curr.price
-       curr.save()
-    return GetData(request,'')
+def DeleteCheckRecord(request,pk,price):
+    del toCheck[str(pk)+str(price)]
+    return GetData(request)
+
+def IncVolume(request,pk,price):
+    dict_key = str(pk + price)
+    print(toCheck[dict_key])
+    if toCheck[dict_key]['volume'] < toCheck[dict_key]['ostatok']:
+       toCheck[dict_key]['volume'] +=1
+       toCheck[dict_key]['total']=toCheck[dict_key]['price']*toCheck[dict_key]['volume']
+    return GetData(request)
+
+def DecVolume(request,pk,price):
+    dict_key = str(pk + price)
+    if toCheck[dict_key]['volume'] !=1:
+       toCheck[dict_key]['volume'] -=1
+       toCheck[dict_key]['total']=toCheck[dict_key]['price']*toCheck[dict_key]['volume']
+    #curr = TempCheck.objects.get(id=pk)
+    #if curr.volume !=1:
+     #  curr.volume=curr.volume-1
+      # curr.total=curr.volume*curr.price
+      # curr.save()
+    return GetData(request)
 
 def DeleteCheck(request):
-    items=TempCheck.objects.all()
-    items.delete()
-    return GetData(request,'Продажа отменена')
-def DeleteCheck4(request):
-    items=TempCheck.objects.all()
-    items.delete()
-    return GetData(request,'Чек проведен')
+    toCheck.clear()
+    return GetData(request,'Оплата отменена...')
 
-def CashCheck(request):
+
+def DeleteCheck4(request):
+    toCheck.clear()
+    return GetData(request,'Оплата проведена!')
+
+def CashCheck(request,mode):
 # меняем номер чека
     nomer=Check.objects.get(pk=1)
     nomer.nomercheck=nomer.nomercheck+1
     nomer.save()
+    #print(toCheck)
+    tmp = list(toCheck.keys())
+    Summa = 0
+    for i in tmp:
+        Summa = Summa + (toCheck[i]['total'])
+    checkSumma = Summa
+
+    #print(checkSumma)
 # записываем чек в журнал документов
-    tempcheck=TempCheck.objects.aggregate(Sum('total'))
+    #tempcheck=TempCheck.objects.aggregate(Sum('total'))
     tempDoc=Doc()
-    tempDoc.typedoc=TypeDoc.objects.get(pk=4)
+    tempDoc.typedoc=TypeDoc.objects.get(pk=mode)
     tempDoc.datadoc=datetime.date.today()
-    tempDoc.saletotal=tempcheck['total__sum']
+    tempDoc.saletotal=checkSumma
     tempDoc.nomerdoc=nomer.nomercheck
     tempDoc.dealer_id=13
+    if request.user.is_authenticated:
+        tempDoc.user=request.user.last_name
     tempDoc.save()
 # записываем позиции товаров в общий журнал
-    tdoc=Doc.objects.filter(typedoc=4).last()
-    print(tdoc.id)
-# вот здесь цикл:
-    tcheck=TempCheck.objects.all()
-    for tcheck1 in tcheck:
-        print(tcheck1.title)
-        tgood=Good.objects.get(id=tcheck1.idgood)
-        tjurnal=DocJurnal()
-        tjurnal.title_id=tgood.id
-        tjurnal.volume=tcheck1.volume
-        tjurnal.buyprice=0
-        tjurnal.buytotal=0
-        tjurnal.percent=0
-        tjurnal.saleprice=tcheck1.price
-        tjurnal.saletotal=tcheck1.total
-        tjurnal.iddoc_id=tdoc.id
-        tjurnal.typedoc=4
-        tjurnal.nomercheck=tdoc.nomerdoc
-        tjurnal.save()
+    tdoc=Doc.objects.filter(typedoc=mode).last()
+    for tcheck1 in toCheck.values():
+       tgood=Good.objects.get(id=tcheck1['title_id'])
+       tjurnal=DocJurnal()
+       tjurnal.title_id=tgood.id
+       tjurnal.volume=tcheck1['volume']
+       tjurnal.buyprice=0
+       tjurnal.buytotal=0
+       tjurnal.percent=0
+       tjurnal.saleprice=tcheck1['price']
+       tjurnal.saletotal=tcheck1['total']
+       tjurnal.iddoc_id=tdoc.id
+       tjurnal.typedoc=mode
+       tjurnal.nomercheck=tdoc.nomerdoc
+       if request.user.is_authenticated:
+           tjurnal.user = request.user.last_name
+       tjurnal.save()
+
     return DeleteCheck4(request)
-def TerminalCheck(request):
-# меняем номер чека
-    nomer=Check.objects.get(pk=1)
-    nomer.nomercheck=nomer.nomercheck+1
-    nomer.save()
-# записываем чек в журнал документов
-    tempcheck=TempCheck.objects.aggregate(Sum('total'))
-    tempDoc=Doc()
-    tempDoc.typedoc=TypeDoc.objects.get(pk=5)
-    tempDoc.datadoc=datetime.date.today()
-    tempDoc.saletotal=tempcheck['total__sum']
-    tempDoc.nomerdoc=nomer.nomercheck
-    tempDoc.dealer_id=13
-    tempDoc.save()
-# записываем позиции товаров в общий журнал
-    tdoc=Doc.objects.filter(typedoc=5).last()
-    print(tdoc.id)
-# вот здесь цикл:
-    tcheck=TempCheck.objects.all()
-    for tcheck1 in tcheck:
-        print(tcheck1.title)
-        tgood=Good.objects.get(id=tcheck1.idgood)
-        tjurnal=DocJurnal()
-        tjurnal.title_id=tgood.id
-        tjurnal.volume=tcheck1.volume
-        tjurnal.buyprice=0
-        tjurnal.buytotal=0
-        tjurnal.percent=0
-        tjurnal.saleprice=tcheck1.price
-        tjurnal.saletotal=tcheck1.total
-        tjurnal.iddoc_id=tdoc.id
-        tjurnal.typedoc=5
-        tjurnal.nomercheck=tdoc.nomerdoc
-        tjurnal.save()
-    return DeleteCheck4(request)
+
+
 
 def CheckJurnal(request):
+    daysumcash=0
     uniqdate=[]
+    uniqsum={}
+    dateArray=[]
     checkitem=DocJurnal.objects.exclude(typedoc=1).exclude(typedoc=2).exclude(typedoc=3)
     checkdoc=Doc.objects.exclude(typedoc=1).exclude(typedoc=2).exclude(typedoc=3).order_by('-datadoc')
 
@@ -725,5 +704,41 @@ def CheckJurnal(request):
         if not item.datadoc in uniqdate:
             uniqdate.append(item.datadoc)
 
-    context = {'checkitem': checkitem, 'checkdoc': checkdoc,'uniqdate':uniqdate}
+    for undata in uniqdate:
+
+        if undata in uniqdate:
+
+            cashsum = Doc.objects.filter(typedoc=4).order_by('-datadoc').filter(datadoc=undata).aggregate(Sum('saletotal'))
+            cashterm = Doc.objects.filter(typedoc=5).order_by('-datadoc').filter(datadoc=undata).aggregate(
+                Sum('saletotal'))
+            dateArray.append(undata)
+            if cashsum['saletotal__sum'] == None:
+                cashsum['saletotal__sum']=0
+            if cashterm['saletotal__sum'] == None:
+                cashterm['saletotal__sum']=0
+            uniqsum[undata]={
+                'nal':float(cashsum['saletotal__sum']),
+                'bank':float(cashterm['saletotal__sum'])}
+
+
+
+    listsum=[[key,value] for key,value in uniqsum.items()]
+    print(uniqsum)
+    context = {'checkitem': checkitem, 'checkdoc': checkdoc,'uniqdate':uniqdate,'uniqsum':uniqsum,'dateArray':dateArray,'listsum':listsum}
+
     return render(request,'trade/CheckJurnal.html',context)
+
+def loginUser(request):
+    if request.method=='POST':
+        form=UserLoginForm(data=request.POST)
+        if form.is_valid():
+            user=form.get_user()
+            login(request,user)
+            return redirect('home')
+    else:
+        form=UserLoginForm()
+    return render(request,'trade/loginUser.html',{"form":form})
+
+def UserOut(request):
+    logout(request)
+    return redirect('loginUser')

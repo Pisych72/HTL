@@ -1,0 +1,14 @@
+{% extends 'trade/base.html' %}
+{% block LinkArea %}
+
+{% endblock LinkArea %}
+{% block DataArea %}
+<h3>Вход в программу:</h3>
+
+<form method="post">
+    {% csrf_token %}
+    {{form.as_p}}
+    <button type="submit" class="btn btn-primary">ОК</button>
+</form>
+
+{% endblock DataArea %}

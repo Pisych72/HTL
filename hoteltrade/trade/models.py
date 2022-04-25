@@ -126,5 +126,14 @@ class TempCheck(models.Model):
     def __str__(self):
         return self.title
 
-
+class TempGood(models.Model):
+    idgood=models.IntegerField()
+    title=models.CharField(max_length=100)
+    category=models.CharField(max_length=50)
+    unit=models.CharField(max_length=10)
+    price=models.FloatField()
+    kolvo=models.FloatField()
+    photo=models.CharField(max_length=200,blank=True,default='')
+    def __str__(self):
+        return self.title
 

@@ -22,7 +22,7 @@
       <th class="text-center">В наличии</th>
     </tr></thead>
 
-{% for category in categories.values %}
+{% for category in uncategory %}
 
     <tr>
         <td colspan="4" style="background-color:Gainsboro;">
@@ -30,19 +30,16 @@
             <strong> {{category.0}}</strong>
         </td>
 </tr>
-{% for item in data.values %}
-
-    {% if item.5 == category.2 %}
+{% for item in tmpGood %}
+{% if item.category == category.0 %}
     <tr>
-        <td ><a href="{% url 'GoodToCheck' item.0 item.2 %}" class="text-dark "> {{item.0}}</a></td>
-
-        <td class="text-center">{{item.4}}</td>
-         <td style="text-align:right">{{item.2|floatformat:2}}</td>
-         <td style="text-align:center" >{{item.6|floatformat:2}} </td>
+        <td ><a href="{% url 'GoodToCheck' item.idgood item.price %}" class="text-dark "> {{item.title}}</a></td>
+        <td class="text-center">{{item.unit}}</td>
+         <td style="text-align:right">{{item.price|floatformat:2}}</td>
+         <td style="text-align:center" >{{item.kolvo|floatformat:2}} </td>
     </tr>
-    {% endif %}
+{% endif %}
 {% endfor %}
-
 
     {% endfor %}
 
@@ -61,14 +58,14 @@
 
 <h4 style=" display:inline">Кассовый чек
 
-    <span class="mediumtext text-primary float-right mt-1">{{msg}}</span>
-
+    <span class="mediumtext text-primary float-right ">{{msg}}
+<a href="{% url 'CreateInitialDoc' %}" class="btn btn-primary  btn-sm      ">Продажи {% now "d.m.Y" %} </a></span>
 
 
 </h4>
 
 
-<div style="display:block;overflow-y: auto; height:550px;"  >
+<div style="display:block;overflow-y: auto; height:550px;float:right"  >
 
 <table class="table table-bordered  table-hover mb-5 table-sm mt-2" >
     <thead class="btnblack "><tr>

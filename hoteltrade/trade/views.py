@@ -541,55 +541,39 @@ def DeleteGoods(request,pk):
 
 # Получение товаров и категорий в наличии
 def GetData(request,msg=''):
-    #unDict={}
-    uniq=sorted(list(set(DocJurnal.objects.values_list('title_id__title','title_id','saleprice','title_id__category__title','title_id__unit__title','title_id__category__id'))))
-    for i in uniq:
-        ost = DocJurnal.objects.filter(title_id=i[1]).filter(typedoc=2).filter(saleprice=i[2]).aggregate(
-             Sum('volume'))
-        prih = DocJurnal.objects.filter(title_id=i[1]).filter(typedoc=1).filter(saleprice=i[2]).aggregate(
-             Sum('volume'))
-        spis = DocJurnal.objects.filter(title_id=i[1]).filter(typedoc=3).filter(saleprice=i[2]).aggregate(
-             Sum('volume'))
-        nal = DocJurnal.objects.filter(title_id=i[1]).filter(typedoc=4).filter(saleprice=i[2]).aggregate(
-            Sum('volume'))
-        bank = DocJurnal.objects.filter(title_id=i[1]).filter(typedoc=5).filter(saleprice=i[2]).aggregate(
-            Sum('volume'))
-        otmena = DocJurnal.objects.filter(title_id=i[1]).filter(typedoc=6).filter(saleprice=i[2]).aggregate(
-            Sum('volume'))
-        if ost['volume__sum'] == None:
-           ost["volume__sum"]=0
-        if prih['volume__sum'] == None:
-           prih["volume__sum"]=0
-        if spis['volume__sum'] == None:
-           spis["volume__sum"]=0
-        if nal['volume__sum'] == None:
-           nal["volume__sum"] = 0
-        if bank['volume__sum'] == None:
-           bank["volume__sum"]=0
-        if otmena['volume__sum'] == None:
-           otmena["volume__sum"]=0
-        ostatok=ost['volume__sum']+prih['volume__sum']-nal['volume__sum']-bank['volume__sum']-spis['volume__sum']+otmena['volume__sum']
-        key=str(i[0])+str(i[2])
-        if ostatok > 0:
-            unDict[key]=i[0],i[1],i[2],i[3],i[4],i[5],ostatok
-            #print(unDict[key])
+    unfilter=DocJurnal.objects.values_list('title_id__title','saleprice','title_id__unit__title','title_id__category__title','title_id','title_id__category','title_id__category__photo').distinct()
+    TempGood.objects.all().delete()
+    for i in unfilter:
+        prihod = DocJurnal.objects.filter(title_id=i[4],saleprice=i[1],typedoc=1).aggregate(summa=Sum('volume'))
+        ost = DocJurnal.objects.filter(title_id=i[4], saleprice=i[1], typedoc=2).aggregate(summa=Sum('volume'))
+        spis = DocJurnal.objects.filter(title_id=i[4], saleprice=i[1], typedoc=3).aggregate(summa=Sum('volume'))
+        nal = DocJurnal.objects.filter(title_id=i[4], saleprice=i[1], typedoc=4).aggregate(summa=Sum('volume'))
+        term = DocJurnal.objects.filter(title_id=i[4], saleprice=i[1], typedoc=5).aggregate(summa=Sum('volume'))
+        otmena = DocJurnal.objects.filter(title_id=i[4], saleprice=i[1], typedoc=6).aggregate(summa=Sum('volume'))
 
-    categories={}
-    categorylist=sorted(list(set(DocJurnal.objects.values_list('title_id__category__title','title_id__category__photo','title_id__category_id'))))
+        ost['summa']=0.0 if ost['summa'] == None else ost['summa']
+        prihod['summa'] = 0.0 if prihod['summa'] == None else prihod['summa']
+        spis['summa'] = 0.0 if spis['summa'] == None else spis['summa']
+        nal['summa'] = 0.0 if nal['summa'] == None else nal['summa']
+        term['summa'] = 0.0 if term['summa'] == None else term['summa']
+        otmena['summa'] = 0.0 if otmena['summa'] == None else otmena['summa']
+        kolv=ost['summa']+prihod['summa']-spis['summa']-nal['summa']-term['summa']+otmena['summa']
 
-    for i in categorylist:
-        key=i[2]
-        categories[key]=i[0],i[1],i[2]
-    tmp = list(toCheck.keys())
-    Summa = 0
-    for i in tmp:
-        Summa = Summa + (toCheck[i]['total'])
-
-    checkSumma = Summa
-
-    context={'data':unDict,'categories':categories,'title':'Продажи','toCheck':toCheck,'summaCheck':checkSumma,'msg':msg}
-    print(msg)
-    return render(request,'trade/GetTradeCategory2.html',context)
+        if TempGood.objects.filter(title=i[0],price=i[1]).exists()==False:
+            if kolv != 0:
+                toPage = TempGood()
+                toPage.idgood =i[4]
+                toPage.title=i[0]
+                toPage.price=i[1]
+                toPage.unit=i[2]
+                toPage.category=i[3]
+                toPage.photo=i[6]
+                toPage.kolvo=kolv
+                toPage.save()
+                toPage.save()
+    tmpGood=TempGood.objects.all()
+    uncategory=TempGood.objects.values_list('category','photo').distinct()
+    return render(request,'trade/GetTradeCategory2.html',{'tmpGood':tmpGood,'uncategory':sorted(uncategory)})
 
 def Proba(request,pk):
     return GetData(request)
